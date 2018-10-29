@@ -1,0 +1,8 @@
+{
+  "name": "seguro-popular-app",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular",
+  "pro_id": "decca4ae"
+}

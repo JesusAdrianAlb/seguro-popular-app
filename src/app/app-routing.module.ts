@@ -17,7 +17,7 @@ const routes: Routes = [
   },
   {
     path: 'geoposition',
-    loadChildren: './clues-ubication/ubication.module#CluesUbicationModule'
+    loadChildren: './ubication/ubication.module#CluesUbicationModule'
   }
 ];
 

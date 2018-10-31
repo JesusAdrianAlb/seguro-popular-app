@@ -10,9 +10,13 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import { Pro } from '@ionic/pro';
-import { IonicErrorHandler } from 'ionic-angular';
+import { IonicErrorHandler, Platform } from 'ionic-angular';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { BasicModule } from './common/basic.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
+import { HeaderComponent } from './navigation/header/header.component';
 
 Pro.init('decca4ae', {
   appVersion: '0.0.1'
@@ -40,10 +44,12 @@ export class CustumErrorHandler implements ErrorHandler {
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, SidenavListComponent, HeaderComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
+    BasicModule,
     IonicModule.forRoot(),
     AppRoutingModule
   ],
@@ -51,10 +57,13 @@ export class CustumErrorHandler implements ErrorHandler {
     StatusBar,
     Geolocation,
     SplashScreen,
+    Platform,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     IonicErrorHandler,
     [{provide: ErrorHandler, useClass: CustumErrorHandler}],
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule {}

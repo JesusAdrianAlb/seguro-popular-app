@@ -5,10 +5,12 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
+import { BasicModule } from '../common/basic.module';
 
 @NgModule({
   imports: [
     CommonModule,
+    BasicModule,
     FormsModule,
     IonicModule,
     RouterModule.forChild([

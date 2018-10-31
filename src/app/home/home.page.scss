@@ -1,1 +1,11 @@
-
+.full-viewport {
+    height: 90vh;
+    width: 100vw;
+    .tilde {
+        background-color: white;
+        box-shadow: 0px 3px 10px lightgray;
+        border-radius: 2px;
+        padding: 30px 20px;
+        cursor: pointer;
+    }
+}

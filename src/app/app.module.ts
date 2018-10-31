@@ -12,6 +12,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { Pro } from '@ionic/pro';
 import { IonicErrorHandler } from 'ionic-angular';
 
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+
 Pro.init('decca4ae', {
   appVersion: '0.0.1'
 });
@@ -47,10 +49,11 @@ export class CustumErrorHandler implements ErrorHandler {
   ],
   providers: [
     StatusBar,
+    Geolocation,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     IonicErrorHandler,
-    [{provide: ErrorHandler, useClass: CustumErrorHandler}]
+    [{provide: ErrorHandler, useClass: CustumErrorHandler}],
   ],
   bootstrap: [AppComponent]
 })

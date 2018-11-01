@@ -1,0 +1,13 @@
+<div fxLayout="column" fxLayoutAlign="center"
+  fxLayoutGap="20px">
+  <div>
+    <h3 *ngIf="data">{{ data.title }}</h3>
+    <p *ngIf="data">{{ data.message }}</p>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="end center"
+    fxLayoutGap="20px">
+    <button mat-raised-button
+      (click)="onAccept()">Aceptar</button>
+  </div>
+
+</div>

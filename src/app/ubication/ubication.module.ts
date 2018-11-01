@@ -13,6 +13,8 @@ import { BasicModule } from '../common/basic.module';
       component: CluesUbicationComponent
     }])
   ],
-  declarations: [CluesUbicationComponent]
+  declarations: [CluesUbicationComponent],
+  providers: [
+  ]
 })
 export class CluesUbicationModule { }

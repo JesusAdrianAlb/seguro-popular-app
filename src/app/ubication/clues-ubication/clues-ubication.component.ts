@@ -22,8 +22,9 @@ import {
   MarkerOptions,
   Marker,
   Environment,
+  HtmlInfoWindow,
 } from '@ionic-native/google-maps/ngx';
-import { CoordinatesData } from '../../models/geolocation.model';
+import { CoordinatesData } from '../../common/models/geolocation.model';
 /**
  * Components for behaivior
  */
@@ -79,6 +80,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
    */
   currentPosition: CoordinatesData;
   generatedMap = false;
+  cluesData: any;
 
 
   /**
@@ -92,27 +94,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
    }
 
   async ngOnInit() {
-    // this.platform.ready().then(() => {
-    //   if (this.platform.is('android')) {
-    //     this.isAndroid = true;
-    //   } else if (this.platform.is('ios')) {
-    //     console.log('ios');
-    //   } else {
-    //     console.log('web');
-    //   }
-    // });
-    // this.geolocation.getCurrentPosition().then((data) => {
-    //   this.dataGeo = data.coords;
-    //   console.log(this.dataGeo, 'CurrentPosition');
-    // }).catch(error => {
-    //   console.log('Error position', error);
-    //   // AIzaSyAdwTbcQ-yQnNcIjB-a2CzbCkKT-UiNjRA
-    // });
 
-    // this.suscriptions.push(this.geolocation.watchPosition().subscribe((data) => {
-    //   this.currentPosition = data.coords;
-    //   console.log(this.currentPosition, 'WatchPosition');
-    // }));
     this.readyDevice = await this.platform.ready().then(() => {
       return true;
     }).catch(error => {
@@ -216,15 +198,35 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
       title: 'Ubicación',
       icon: 'red',
       animation: 'DROP',
+      name: 'Nombre de la clues',
       position: {
         lat: currentPosition.latitude,
         lng: currentPosition.longitude
-      }
+      },
     });
+
+    const htmlInfoWindow = new HtmlInfoWindow();
+    const frame: HTMLElement = document.createElement('div');
+    frame.innerHTML = [
+      '<div class=".div-map">',
+      '<h3 style="color:red">Texto de prueba</h3>',
+      '<button mat-raised-button>Boton</button>',
+      '</div>'
+      ].join('');
+
+    frame.getElementsByTagName('button')[0].addEventListener('click', (data) => {
+      alert(this.cluesData);
+    });
+
+    htmlInfoWindow.setContent(frame, { width: '280px', height: '100px'});
 
     this.suscriptions.push(marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe((data) => {
       // alert('clicked');
-      alert(data);
+      // alert(data);
+      this.cluesData = marker.get('name');
+      // alert(JSON.stringify(marker.get('styles')));
+      // alert(marker.get('name'));
+      htmlInfoWindow.open(marker);
     }));
   }
 

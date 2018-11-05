@@ -1,3 +1,8 @@
-<button mat-icon-button>
-    <mat-icon>menu</mat-icon>
-</button>
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <button (click)="onToggleSidenav()" mat-icon-button>
+        <mat-icon>menu</mat-icon>
+    </button> 
+    <button type="button" routerLink="/information" mat-icon-button>
+        <mat-icon>info</mat-icon>
+    </button>
+</div>

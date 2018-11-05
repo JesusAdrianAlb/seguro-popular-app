@@ -6,6 +6,7 @@ import { BasicModule } from '../common/basic.module';
 import { MaoUbicationComponent } from './mao-ubication/mao-ubication.component';
 import { UbicationContainerComponent } from './ubication-container/ubication-container.component';
 import { UbicationMenuComponent } from './ubication-menu/ubication-menu.component';
+import { CluesMapUbicationComponent } from './clues-map-ubication/clues-map-ubication.component';
 
 
 const routes: Routes = [
@@ -15,7 +16,7 @@ const routes: Routes = [
       children: [
         { path: '', component: UbicationMenuComponent },
         { path: 'mao-location', component: MaoUbicationComponent },
-        { path: 'clues-location', component: CluesUbicationComponent }
+        { path: 'clues-location', component: CluesMapUbicationComponent }
       ]
     },
 ];
@@ -30,7 +31,8 @@ const routes: Routes = [
     CluesUbicationComponent,
     MaoUbicationComponent,
     UbicationContainerComponent,
-    UbicationMenuComponent
+    UbicationMenuComponent,
+    CluesMapUbicationComponent
   ],
   providers: [
   ]

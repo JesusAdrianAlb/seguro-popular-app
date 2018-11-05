@@ -1,0 +1,23 @@
+.list-navigation {
+    height: 100%;
+    background-color: 	#0b84bf;
+    div {
+        a, .icon {
+            color: #FFF;
+        }
+        a:hover {
+            color:#0b84bf;
+            background-color: #FFF;
+            .icon {
+                color:#0b84bf;
+            }
+        }
+        .nav-caption{
+            margin-left: 20px;
+        }
+    }
+    .image-logo {
+        width: 100%;
+        // height: 200px;
+    }
+}

@@ -1,7 +1,7 @@
 /**
  * Core imports dfor angular
  */
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 /**
  * Plugins imports for native devices
@@ -81,6 +81,9 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   currentPosition: CoordinatesData;
   generatedMap = false;
   cluesData: any;
+
+  @Input() markers: Marker[] = [];
+  @Input() searchFilter = false;
 
 
   /**

@@ -1,14 +1,26 @@
-<div fxLayout="column" fxLayoutAlign="center center">
-  <div class="menu-ubication">
-      <div class="card pointer" routerLink="/ubication/mao-location" 
-        fxLayout="column" fxLayoutAlign="center center">
-        <mat-icon>home</mat-icon>
-        <p class="text-align-center">Módulo seguro popular</p>
+<div class="full-view" fxLayout="column" fxLayoutAlign="start strech">
+  <div class="content-footer">
+
+    <div class="menu-ubication">
+      <div class="title">
+          <!-- Contenido  -->
+          <mat-icon class="icon">place</mat-icon>
+          <span>Ubica</span>
       </div>
-      <div class="card pointer" routerLink="/ubication/clues-location" 
-        fxLayout="column" fxLayoutAlign="center center">
+      <div class="tildes">
+        <div class="menu-tildes" routerLink="/ubication/mao-location" 
+          fxLayout="column" fxLayoutAlign="center center">
           <mat-icon>home</mat-icon>
-          <p class="text-align-center">Unidades médicas</p>
+          <p class="text-align-center">Módulo seguro popular</p>
+        </div>
+        <div class="menu-tildes" routerLink="/ubication/clues-location" 
+          fxLayout="column" fxLayoutAlign="center center">
+            <mat-icon>home</mat-icon>
+            <p class="text-align-center">Unidades médicas</p>
+        </div>
       </div>
-  </div> 
+    </div>
+    <app-footer class="footer"></app-footer>
+  </div>
+ 
 </div>

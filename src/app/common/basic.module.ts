@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FeatureDisabledComponent } from './modals/feature-disabled/feature-disabled.component';
 import { FeatureDeniedComponent } from './modals/feature-denied/feature-denied.component';
+import { FooterComponent } from '../navigation/footer/footer.component';
 
 @NgModule({
   imports: [
@@ -19,10 +20,12 @@ import { FeatureDeniedComponent } from './modals/feature-denied/feature-denied.c
     FlexLayoutModule,
     FeatureDisabledComponent,
     FeatureDeniedComponent,
+    FooterComponent
   ],
   declarations: [
     FeatureDisabledComponent,
     FeatureDeniedComponent,
+    FooterComponent
   ]
 })
 export class BasicModule { }

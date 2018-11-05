@@ -2,7 +2,7 @@
   <mat-sidenav mode="push" #sidenav role="navigation">
     <app-sidenav-list (click)="sidenav.close()" ></app-sidenav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content class="content-full">
     <app-header (sidenavToggle)="sidenav.toggle()" ></app-header>
     <main>
       <router-outlet></router-outlet>

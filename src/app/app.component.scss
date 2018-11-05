@@ -8,4 +8,10 @@ mat-sidenav-container, mat-sidenav-content, mat-sidenav {
     // opacity: 0.59;
     // color: #FFFFFF;
   }
-  
+
+  .content-full {
+    display: grid;
+    width: 100wh;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
+  }

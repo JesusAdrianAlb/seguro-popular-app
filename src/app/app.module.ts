@@ -22,6 +22,7 @@ import { FeatureDisabledComponent } from './common/modals/feature-disabled/featu
 import { FeatureDeniedComponent } from './common/modals/feature-denied/feature-denied.component';
 import { GoogleMaps } from '@ionic-native/google-maps/ngx';
 
+
 Pro.init('decca4ae', {
   appVersion: '0.0.1'
 });
@@ -48,7 +49,11 @@ export class CustumErrorHandler implements ErrorHandler {
 
 
 @NgModule({
-  declarations: [AppComponent, SidenavListComponent, HeaderComponent],
+  declarations: [
+    AppComponent,
+    SidenavListComponent,
+    HeaderComponent,
+  ],
   entryComponents: [
     FeatureDisabledComponent,
     FeatureDeniedComponent,

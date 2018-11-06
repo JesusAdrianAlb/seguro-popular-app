@@ -25,6 +25,10 @@ const routes: Routes = [
     loadChildren: './consultation/consultation.module#ConsultationModule'
   },
   {
+    path: 'health',
+    loadChildren: './health/health.module#HealthModule'
+  },
+  {
     path: 'information',
     loadChildren: './information/information.module#InformationModule'
   }

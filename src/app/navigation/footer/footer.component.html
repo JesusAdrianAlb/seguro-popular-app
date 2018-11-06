@@ -1,14 +1,17 @@
 <div class="footer" fxLayout="row" fxLayoutAlign="space-around center">
-  <button routerLink="/ubication" mat-icon-button>
+  <button (click)="goToRoute('/home')" mat-icon-button>
+      <mat-icon class="home">home</mat-icon>
+  </button>
+  <button (click)="goToRoute('/ubication')" mat-icon-button>
     <mat-icon class="ubication">place</mat-icon>
   </button>
-  <button routerLink="/home" mat-icon-button>
+  <button (click)="goToRoute('/consultation')" mat-icon-button>
       <mat-icon class="validity">fingerprint</mat-icon>
   </button>
-  <button routerLink="/home" mat-icon-button>
+  <button (click)="goToRoute('/health')" mat-icon-button>
     <mat-icon class="health">favorite_border</mat-icon>
   </button>
-  <button routerLink="/home" mat-icon-button>
+  <button (click)="goToRoute('/prevention')" mat-icon-button>
       <mat-icon class="prevention">healing</mat-icon>
-    </button>
+  </button>
 </div>

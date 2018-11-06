@@ -22,3 +22,27 @@
 .pointer {
     cursor: pointer;
 }
+
+.footer {
+    align-self: end;
+}
+
+.menu-tilde-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    background-color: white;
+    box-shadow: 0px 3px 10px lightgray;
+    border: 1px solid #666;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    width: 120px;
+    height: 120px;
+    justify-self: center;
+    mat-icon {
+        height: 65px;
+        font-size: 65px;
+        width: 100%;
+    }
+}

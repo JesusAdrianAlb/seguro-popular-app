@@ -53,7 +53,7 @@ export class CustumErrorHandler implements ErrorHandler {
   declarations: [
     AppComponent,
     SidenavListComponent,
-    HeaderComponent
+    HeaderComponent,
   ],
   entryComponents: [
     FeatureDisabledComponent,

@@ -6,10 +6,12 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FeatureDisabledComponent } from './modals/feature-disabled/feature-disabled.component';
 import { FeatureDeniedComponent } from './modals/feature-denied/feature-denied.component';
 import { FooterComponent } from '../navigation/footer/footer.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     IonicModule,
+    FormsModule,
     CommonModule,
     MaterialModule,
     FlexLayoutModule,
@@ -18,9 +20,10 @@ import { FooterComponent } from '../navigation/footer/footer.component';
     IonicModule,
     MaterialModule,
     FlexLayoutModule,
+    FormsModule,
     FeatureDisabledComponent,
     FeatureDeniedComponent,
-    FooterComponent
+    FooterComponent,
   ],
   declarations: [
     FeatureDisabledComponent,

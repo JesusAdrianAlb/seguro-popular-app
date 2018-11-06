@@ -21,6 +21,8 @@ import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import { FeatureDisabledComponent } from './common/modals/feature-disabled/feature-disabled.component';
 import { FeatureDeniedComponent } from './common/modals/feature-denied/feature-denied.component';
 import { GoogleMaps } from '@ionic-native/google-maps/ngx';
+import { ConsultationService } from './common/services/consultation.service';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -64,7 +66,8 @@ export class CustumErrorHandler implements ErrorHandler {
     BrowserAnimationsModule,
     BasicModule,
     IonicModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [
     StatusBar,
@@ -76,6 +79,7 @@ export class CustumErrorHandler implements ErrorHandler {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     IonicErrorHandler,
     [{provide: ErrorHandler, useClass: CustumErrorHandler}],
+    ConsultationService,
   ],
   bootstrap: [
     AppComponent

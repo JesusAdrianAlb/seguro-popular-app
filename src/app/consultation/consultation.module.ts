@@ -7,6 +7,7 @@ import { ConsultationMenuComponent } from './consultation-menu/consultation-menu
 import { ConsultationFolioComponent } from './consultation-folio/consultation-folio.component';
 import { ConsultationClinicComponent } from './consultation-clinic/consultation-clinic.component';
 
+
 const routes: Routes = [
   {
     path: '',
@@ -30,6 +31,9 @@ const routes: Routes = [
     ConsultationMenuComponent,
     ConsultationFolioComponent,
     ConsultationClinicComponent,
+  ],
+  providers: [
+
   ]
 })
 export class ConsultationModule { }

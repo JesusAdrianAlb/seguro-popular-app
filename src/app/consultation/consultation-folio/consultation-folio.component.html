@@ -1,3 +1,35 @@
-<p>
-  consultation-folio works!
-</p>
+
+<div class="full-view">
+  <div> 
+      <p class="title-text">
+        <mat-icon>search</mat-icon>
+        Consulta tu folio
+      </p>
+    <form class="form" fxLayout="column" fxLayoutAlign="center center" 
+      fxLayoutGap="20px" (ngSubmit)="onSubmit(f)" #f="ngForm">
+      <!-- Curp -->
+      <mat-form-field class="input">
+          <input matInput required maxlength="18"
+          minlength="18"
+          ngModel #curp="ngModel" 
+          name="curp" placeholder="CURP" 
+          type="text">
+          <mat-error *ngIf="!curp.valid"> Se necesita que introduzca un curp válido</mat-error>
+      </mat-form-field>
+      <!-- Folio de seguro popular -->
+      <mat-form-field class="input">
+          <input matInput required 
+          maxlength="12" minlength="11"
+          ngModel #folio="ngModel" 
+          name="folio" placeholder="Folio de seguro popular" 
+          type="text">
+          <mat-error *ngIf="!folio.valid"> Se necesita que introduzca un folio válido</mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button [disabled]="!f.valid">
+        CONSULTAR
+      </button>
+    </form>
+  </div>
+  <app-footer class="footer"></app-footer>
+</div>

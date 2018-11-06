@@ -46,3 +46,27 @@
         width: 100%;
     }
 }
+
+.full-view {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
+    .menu-tildes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        
+    }
+    .title {
+        margin: 15px 15px 15px 15px;
+        .title-text {
+            font-size: 36px;
+            padding-left: 15px;
+        }
+    }
+}
+
+.input {
+    width: 100%;
+}

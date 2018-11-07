@@ -14,7 +14,7 @@ export class ConsultationFolioComponent implements OnInit, OnDestroy {
   suscriptions: Subscription[] = [];
 
   constructor(private dialog: MatDialog,
-    private consultationService: ConsultationService) { }
+    private consultationService: ConsultationService) { console.log('texto'); }
 
   ngOnInit() {
   }
@@ -32,11 +32,12 @@ export class ConsultationFolioComponent implements OnInit, OnDestroy {
     // .subscribe((data) => {
     //   alert(data);
     // }));
+    // alert(form.value.curp + '-' + form.value.folio);
     this.consultationService.getValidity(form.value.curp, form.value.folio)
       .toPromise().then((data) => {
         alert(data);
       }).catch(error => {
-        alert('error');
+        alert(error.message);
         console.log(error);
       });
   }

@@ -7,6 +7,8 @@ import { FeatureDisabledComponent } from './modals/feature-disabled/feature-disa
 import { FeatureDeniedComponent } from './modals/feature-denied/feature-denied.component';
 import { FooterComponent } from '../navigation/footer/footer.component';
 import { FormsModule } from '@angular/forms';
+import { CustomMaxLengthDirective } from './directives/custom-max-length.directive';
+import { CustomMinLengthDirective } from './directives/custom-min-length.directive';
 
 @NgModule({
   imports: [
@@ -24,11 +26,15 @@ import { FormsModule } from '@angular/forms';
     FeatureDisabledComponent,
     FeatureDeniedComponent,
     FooterComponent,
+    CustomMaxLengthDirective,
+    CustomMinLengthDirective,
   ],
   declarations: [
     FeatureDisabledComponent,
     FeatureDeniedComponent,
-    FooterComponent
+    FooterComponent,
+    CustomMaxLengthDirective,
+    CustomMinLengthDirective
   ]
 })
 export class BasicModule { }

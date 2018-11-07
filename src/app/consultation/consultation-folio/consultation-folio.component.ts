@@ -14,7 +14,7 @@ export class ConsultationFolioComponent implements OnInit, OnDestroy {
   suscriptions: Subscription[] = [];
 
   constructor(private dialog: MatDialog,
-    private consultationService: ConsultationService) { console.log('texto'); }
+    private consultationService: ConsultationService) {  }
 
   ngOnInit() {
   }

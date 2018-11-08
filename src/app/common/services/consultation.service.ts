@@ -6,6 +6,11 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ConsultationService {
 
+  CURP: string;
+  paciente: string;
+  folio_sp: string;
+  complementData: any;
+
   constructor(private http: HttpClient) { }
 
   getValidity(curp: string, folio: string) {
@@ -13,5 +18,23 @@ export class ConsultationService {
     const FOLIO = folio;
 
     return this.http.get(`http://localhost/sissy/Paciente/PacientesFoliosSP/GetInfoWebService?CURP=${CURP}&SP=${FOLIO}`);
+  }
+
+  setPacienteData(data: {
+    curp: string; folio: string; ap_paterno: string; ap_materno: string; nombre: string; complement: any
+  }) {
+    this.CURP = data.curp;
+    this.folio_sp = data.folio;
+    this.paciente = data.ap_paterno + ' ' + data.ap_materno + ' ' + data.nombre;
+    this.complementData = data.complement;
+  }
+
+  getPacienteData() {
+    return {
+      curp: this.CURP,
+      folio: this.folio_sp,
+      paciente: this.paciente,
+      complement: this.complementData
+    };
   }
 }

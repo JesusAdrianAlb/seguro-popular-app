@@ -9,6 +9,9 @@ import { FooterComponent } from '../navigation/footer/footer.component';
 import { FormsModule } from '@angular/forms';
 import { CustomMaxLengthDirective } from './directives/custom-max-length.directive';
 import { CustomMinLengthDirective } from './directives/custom-min-length.directive';
+import { ContentMessageComponent } from './modals/content-message/content-message.component';
+import { ValidityStatusPipe } from './pipes/validity-status.pipe';
+import { LoadModalComponent } from './modals/load-modal/load-modal.component';
 
 @NgModule({
   imports: [
@@ -28,13 +31,19 @@ import { CustomMinLengthDirective } from './directives/custom-min-length.directi
     FooterComponent,
     CustomMaxLengthDirective,
     CustomMinLengthDirective,
+    ContentMessageComponent,
+    ValidityStatusPipe,
+    LoadModalComponent,
   ],
   declarations: [
     FeatureDisabledComponent,
     FeatureDeniedComponent,
+    ContentMessageComponent,
     FooterComponent,
     CustomMaxLengthDirective,
-    CustomMinLengthDirective
+    CustomMinLengthDirective,
+    ValidityStatusPipe,
+    LoadModalComponent,
   ]
 })
 export class BasicModule { }

@@ -1,0 +1,22 @@
+<div fxLayout="column" fxLayoutAlign="center center" 
+fxLayoutGap="20px" style="height: 100%; width: 100%;">
+  <div class="mini-header">
+    <h3 class="item-header">{{data.title}}</h3>
+    <mat-icon *ngIf="data.icon && data.color==='red'" class="icon red">
+      {{data.icon}}
+    </mat-icon>
+    <mat-icon *ngIf="data.icon && data.color==='yellow'" class="icon yellow">
+        {{data.icon}}
+      </mat-icon>
+  </div>
+  <div class="content">
+    <p>
+      {{data.message}}
+    </p>
+  </div>
+  <div class="content">
+    <button (click)="onAccept()" class="button" mat-raised-button>
+      Aceptar
+    </button>
+  </div>
+</div>

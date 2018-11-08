@@ -23,6 +23,8 @@ import { FeatureDeniedComponent } from './common/modals/feature-denied/feature-d
 import { GoogleMaps } from '@ionic-native/google-maps/ngx';
 import { ConsultationService } from './common/services/consultation.service';
 import { HttpClientModule } from '@angular/common/http';
+import { ContentMessageComponent } from './common/modals/content-message/content-message.component';
+import { LoadModalComponent } from './common/modals/load-modal/load-modal.component';
 
 
 
@@ -61,6 +63,8 @@ export class CustumErrorHandler implements ErrorHandler {
   entryComponents: [
     FeatureDisabledComponent,
     FeatureDeniedComponent,
+    ContentMessageComponent,
+    LoadModalComponent,
   ],
   imports: [
     BrowserModule,

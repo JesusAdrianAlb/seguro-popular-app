@@ -1,0 +1,42 @@
+<div *ngIf="isReady" class="full-view">
+  <div class="card" fxLayout="column" fxLayoutGap="20px">
+     <div class="icon">
+        <mat-icon matTooltip="Activo" *ngIf="data.complement.SEGURO_POPULAR.ESTATUS === 'A'" class="valid">
+              check_circle
+      </mat-icon>
+      <mat-icon matTooltip="Inactivo" *ngIf="data.complement.SEGURO_POPULAR.ESTATUS !== 'A'" class="invalid">
+              cancel
+      </mat-icon>
+     </div>
+    
+    <div class="data-result">
+      <div class="item-result">
+            <p>
+                Folio:
+            </p>
+            <b>{{ data.folio }}</b>
+      </div>
+      <div class="item-result">
+        <p>Curp:</p>
+        <b>{{ data.curp }}</b>
+      </div>
+      <div class="item-result">
+        <p>Paciente:</p>
+        <b>{{ data.paciente }}</b>
+      </div>
+      <div class="item-result">
+        <p>Fecha de activación: </p>
+        <b>{{ data.complement.SEGURO_POPULAR.FECHA_VIG_INI | date}}</b>
+      </div>
+      <div class="item-result">
+        <p>Fecha de vigencia: </p>
+        <b>{{ data.complement.SEGURO_POPULAR.FECHA_VIG_FIN | date}}</b>
+      </div>
+      <div class="item-result">
+          <p>Estatus de póliza: </p>
+          <b>{{ data.complement.SEGURO_POPULAR.ESTATUS | validityStatus }}</b>
+      </div>
+    </div>
+  </div>
+  <app-footer class="footer"></app-footer>
+</div>

@@ -3,6 +3,9 @@ import { NgForm } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { ConsultationService } from '../../common/services/consultation.service';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { LoadModalComponent } from '../../common/modals/load-modal/load-modal.component';
+import { ContentMessageComponent } from '../../common/modals/content-message/content-message.component';
 
 @Component({
   selector: 'app-consultation-folio',
@@ -13,7 +16,7 @@ export class ConsultationFolioComponent implements OnInit, OnDestroy {
 
   suscriptions: Subscription[] = [];
 
-  constructor(private dialog: MatDialog,
+  constructor(private dialog: MatDialog, private router: Router,
     private consultationService: ConsultationService) {  }
 
   ngOnInit() {
@@ -28,17 +31,40 @@ export class ConsultationFolioComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: NgForm) {
-    // this.suscriptions.push(this.consultationService.getValidity(form.value.curp, form.value.folio)
-    // .subscribe((data) => {
-    //   alert(data);
-    // }));
-    // alert(form.value.curp + '-' + form.value.folio);
+
+    // this.router.navigate(['/consultation/results']);
+    const dialgRef = this.dialog.open(LoadModalComponent, { width: '350px', height: '400px'});
     this.consultationService.getValidity(form.value.curp, form.value.folio)
-      .toPromise().then((data) => {
-        alert(data);
+      .toPromise().then((data: any) => {
+
+        if (data.data && data.data.length === 1) {
+          // console.log(data.data);
+          data.data.forEach(element => {
+
+            this.consultationService.setPacienteData({
+              curp: element.PACIENTE.CURP, folio: element.SEGURO_POPULAR.FOLIO,
+              nombre: element.PACIENTE.NOMBRE, ap_materno: element.PACIENTE.AP_MATERNO,
+              ap_paterno: element.PACIENTE.AP_PATERNO, complement: element
+            });
+            dialgRef.close();
+            this.router.navigate(['/consultation/results']);
+          });
+
+        } else {
+          // Enviar mensaje de que vaya a su módulo más cercano
+          dialgRef.close();
+          this.dialog.open(ContentMessageComponent,
+            { width: '350px', height: '400px', data: { title: 'Ups! Lo sentimos', icon: 'warning',
+            message: 'El folio presenta una incidencia, favor de verificar en su módulo de seguro popular más cercano',
+            color: 'yellow'}});
+        }
+
       }).catch(error => {
-        alert(error.message);
-        console.log(error);
+        dialgRef.close();
+        this.dialog.open(ContentMessageComponent,
+          { width: '350px', height: '400px', data: { title: 'Ups! Lo sentimos', icon: 'error',
+          message: 'Ha ocurrido un problema en nuestros servidores. Intente más tarde',
+          color: 'red'}});
       });
   }
 

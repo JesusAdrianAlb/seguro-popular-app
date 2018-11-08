@@ -1,0 +1,31 @@
+.mini-header {
+    display: grid;
+    width: 100%;
+    grid-template-columns: auto 1fr;
+    .item-header {
+        display: grid;
+        justify-self: start;
+        align-self: center;
+    }
+    .icon {
+        display: grid;
+        justify-self: center;
+        align-self: center;
+    }
+    .red {
+        color: red;
+    }
+    .yellow {
+        color: #ffd337;
+    }
+
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    .button {
+        justify-self: end;
+    }
+}

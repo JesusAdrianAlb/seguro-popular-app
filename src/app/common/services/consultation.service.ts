@@ -20,6 +20,10 @@ export class ConsultationService {
     return this.http.get(`http://localhost/sissy/Paciente/PacientesFoliosSP/GetInfoWebService?CURP=${CURP}&SP=${FOLIO}`);
   }
 
+  getCluesLocationByCluesKey(cluesKey: string) {
+    return this.http.get(`http://localhost/sissy/Paciente/PacientesFoliosSP/GetCluesLocationByCluesKey?Clues=${cluesKey}`);
+  }
+
   setPacienteData(data: {
     curp: string; folio: string; ap_paterno: string; ap_materno: string; nombre: string; complement: any
   }) {

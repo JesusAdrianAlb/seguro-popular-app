@@ -36,7 +36,7 @@ export class ConsultationFolioComponent implements OnInit, OnDestroy {
     const dialgRef = this.dialog.open(LoadModalComponent, { width: '350px', height: '400px'});
     this.consultationService.getValidity(form.value.curp, form.value.folio)
       .toPromise().then((data: any) => {
-
+        // console.log(data);
         if (data.data && data.data.length === 1) {
           // console.log(data.data);
           data.data.forEach(element => {

@@ -7,6 +7,7 @@ import { ConsultationMenuComponent } from './consultation-menu/consultation-menu
 import { ConsultationFolioComponent } from './consultation-folio/consultation-folio.component';
 import { ConsultationClinicComponent } from './consultation-clinic/consultation-clinic.component';
 import { ConsultationResultsComponent } from './consultation-results/consultation-results.component';
+import { ClinicResultComponent } from './clinic-result/clinic-result.component';
 
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
       { path: 'folio', component: ConsultationFolioComponent },
       { path: 'clinic', component: ConsultationClinicComponent },
       { path: 'results', component: ConsultationResultsComponent },
+      { path: 'clinic-results', component: ClinicResultComponent }
     ]
   }
 ];
@@ -34,6 +36,7 @@ const routes: Routes = [
     ConsultationFolioComponent,
     ConsultationClinicComponent,
     ConsultationResultsComponent,
+    ClinicResultComponent,
   ],
   providers: [
 

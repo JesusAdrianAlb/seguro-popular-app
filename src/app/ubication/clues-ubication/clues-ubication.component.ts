@@ -83,7 +83,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   cluesData: any;
 
   @Input() markers: Marker[] = [];
-  @Input() searchFilter = false;
+  // @Input() searchFilter = false;
 
 
   /**

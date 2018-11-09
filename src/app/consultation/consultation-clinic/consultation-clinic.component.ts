@@ -6,6 +6,8 @@ import { Subscription } from 'rxjs';
 import { ContentMessageComponent } from '../../common/modals/content-message/content-message.component';
 import { LoadModalComponent } from '../../common/modals/load-modal/load-modal.component';
 import { NgForm } from '@angular/forms';
+import { AuthService } from '../../common/services/auth.service';
+import { User } from '../../common/models/user.models';
 
 @Component({
   selector: 'app-consultation-clinic',
@@ -17,7 +19,8 @@ export class ConsultationClinicComponent implements OnInit, OnDestroy {
   suscriptions: Subscription[] = [];
 
   constructor(private dialog: MatDialog, private router: Router,
-    private consultationService: ConsultationService) { }
+    private consultationService: ConsultationService,
+    private authService: AuthService) { }
 
   ngOnInit() {
   }
@@ -42,6 +45,19 @@ export class ConsultationClinicComponent implements OnInit, OnDestroy {
               nombre:  data.data[0].PACIENTE.NOMBRE, ap_materno:  data.data[0].PACIENTE.AP_MATERNO,
               ap_paterno:  data.data[0].PACIENTE.AP_PATERNO, complement:  data.data[0],
             });
+
+            if (this.authService.getLogginData()) {
+
+            } else {
+              const user: User = {
+                name : data.data[0].PACIENTE.NOMBRE,
+                curp:  data.data[0].PACIENTE.CURP,
+                folio: data.data[0].SEGURO_POPULAR.FOLIO,
+                gender: data.data[0].PACIENTE.SEXO,
+                dateOfBirth: new Date(data.data[0].PACIENTE.FECHA_NAC)
+              };
+              this.authService.setLogginData(user);
+            }
 
             dialgRef.close();
             this.router.navigate(['/consultation/clinic-results']);

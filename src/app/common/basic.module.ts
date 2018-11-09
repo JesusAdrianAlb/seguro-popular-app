@@ -13,6 +13,7 @@ import { ContentMessageComponent } from './modals/content-message/content-messag
 import { ValidityStatusPipe } from './pipes/validity-status.pipe';
 import { LoadModalComponent } from './modals/load-modal/load-modal.component';
 import { CluesUbicationComponent } from '../ubication/clues-ubication/clues-ubication.component';
+import { DirectionsMapComponent } from './shared/directions-map/directions-map.component';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { CluesUbicationComponent } from '../ubication/clues-ubication/clues-ubic
     ContentMessageComponent,
     ValidityStatusPipe,
     LoadModalComponent,
-    CluesUbicationComponent
+    CluesUbicationComponent,
+    DirectionsMapComponent,
   ],
   declarations: [
     FeatureDisabledComponent,
@@ -47,6 +49,7 @@ import { CluesUbicationComponent } from '../ubication/clues-ubication/clues-ubic
     ValidityStatusPipe,
     LoadModalComponent,
     CluesUbicationComponent,
+    DirectionsMapComponent,
   ]
 })
 export class BasicModule { }

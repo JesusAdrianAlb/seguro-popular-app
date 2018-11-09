@@ -3,6 +3,7 @@ import { ConsultationService } from '../../common/services/consultation.service'
 import { MatDialog } from '@angular/material';
 import { LoadModalComponent } from '../../common/modals/load-modal/load-modal.component';
 import { ContentMessageComponent } from '../../common/modals/content-message/content-message.component';
+import { MarkerData } from '../../common/models/marker-data.models';
 
 @Component({
   selector: 'app-clinic-result',
@@ -19,17 +20,24 @@ export class ClinicResultComponent implements OnInit {
     private dialog: MatDialog) { }
 
   async ngOnInit() {
-    const dialgRef = this.dialog.open(LoadModalComponent, { width: '350px', height: '400px',
-      data: { message: 'Cangando ubicación de su centro de salud'}});
+    const dialgRefMap = this.dialog.open(LoadModalComponent, { width: '350px', height: '400px',
+      data: { message: 'Cargando ubicación de su centro de salud'}});
+
+    // dialgRefMap.close();
 
     this.data = this.consultationService.getPacienteData();
-
+    console.log(this.data);
     await this.consultationService.getCluesLocationByCluesKey(this.data.complement.CLUES.CLUES)
     .toPromise().then((cluesData: any) => {
-      dialgRef.close();
       if (cluesData) {
-        this.cluesData = cluesData;
+        this.cluesData = [{
+          latitud: cluesData.LATITUD,
+          longitude: cluesData.LONGITUD,
+          direction: cluesData.DIRECCION
+        }];
         console.log(cluesData);
+        dialgRefMap.close();
+        this.isReady = true;
       } else {
         this.dialog.open(ContentMessageComponent,
           { width: '350px', height: '400px', data: { title: 'Ups! Lo sentimos', icon: 'cancel',
@@ -39,17 +47,17 @@ export class ClinicResultComponent implements OnInit {
 
     }).catch(error => {
 
-      dialgRef.close();
+      // dialgRefMap.close();
       this.dialog.open(ContentMessageComponent,
         { width: '350px', height: '400px', data: { title: 'Ups! Lo sentimos', icon: 'error',
         message: 'Ha ocurrido un problema en nuestros servidores. Intente más tarde',
         color: 'red'}});
     });
 
-    dialgRef.close();
+    // dialgRefMap.close();
 
 
-    this.isReady = true;
+    // this.isReady = false;
     // console.log(this.data);
   }
 

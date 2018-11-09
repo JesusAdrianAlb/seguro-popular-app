@@ -30,6 +30,7 @@ import { CoordinatesData } from '../../common/models/geolocation.model';
  */
 import { FeatureDisabledComponent } from '../../common/modals/feature-disabled/feature-disabled.component';
 import { FeatureDeniedComponent } from '../../common/modals/feature-denied/feature-denied.component';
+import { MarkerData } from '../../common/models/marker-data.models';
 
 /**
  * Para evitar errores en typeScript
@@ -86,13 +87,16 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   generatedMap = false;
   cluesData: any;
 
+  initialZoom = true;
+
 
   /**
    * Marcadores a señalar
    */
-  @Input() markers: Marker[] = [];
-  @Input() cluesMarkers: Marker[] = [];
-  @Input() maoMarkers: Marker[] = [];
+  @Input() markers: MarkerData[] = [];
+  @Input() cluesMarkers: MarkerData[] = [];
+  @Input() maoMarkers: MarkerData[] = [];
+  @Input() seeYouLocation = false;
   // @Input() searchFilter = false;
 
 
@@ -214,40 +218,119 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
     await this.map.one(GoogleMapsEvent.MAP_READY);
 
-    const marker: Marker = this.map.addMarkerSync({
-      title: 'Ubicación',
-      icon: 'red',
-      animation: 'DROP',
-      name: 'Nombre de la clues',
-      position: {
-        lat: currentPosition.latitude,
-        lng: currentPosition.longitude
-      },
-    });
+    // Marcadores generales
+    for (const iterator of this.markers) {
+      const marker = this.map.addMarkerSync({
+        title: iterator.title,
+        icon: iterator.icon,
+        animation: iterator.animacion,
+        name: iterator.clues,
+        position: {
+          lat: iterator.latitud,
+          lng: iterator.longitude
+        }
+      });
 
-    const htmlInfoWindow = new HtmlInfoWindow();
-    const frame: HTMLElement = document.createElement('div');
-    frame.innerHTML = [
-      '<div class=".div-map">',
-      '<h3 style="color:red">Texto de prueba</h3>',
-      '<button mat-raised-button>Boton</button>',
-      '</div>'
-      ].join('');
+      const htmlInfoWindow = new HtmlInfoWindow();
+      const frame: HTMLElement = document.createElement('div');
+      frame.innerHTML = [
+        '<div class=".div-map">',
+        `<h3 style="color:red">${iterator.title}</h3>`,
+        '<button mat-raised-button>Boton</button>',
+        '</div>'
+        ].join('');
 
-    frame.getElementsByTagName('button')[0].addEventListener('click', (data) => {
-      // alert(this.cluesData);
-    });
+      frame.getElementsByTagName('button')[0].addEventListener('click', (data) => {
+        alert(this.cluesData);
+      });
 
-    htmlInfoWindow.setContent(frame, { width: '280px', height: '100px'});
+      htmlInfoWindow.setContent(frame, { width: '280px', height: '100px'});
 
-    this.suscriptions.push(marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe((data) => {
-      // alert('clicked');
-      // alert(data);
-      this.cluesData = marker.get('name');
-      // alert(JSON.stringify(marker.get('styles')));
-      // alert(marker.get('name'));
-      htmlInfoWindow.open(marker);
-    }));
+      this.suscriptions.push(marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe((data) => {
+        // alert('clicked');
+        // alert(data);
+        this.cluesData = marker.get('name');
+        // alert(JSON.stringify(marker.get('styles')));
+        // alert(marker.get('name'));
+        htmlInfoWindow.open(marker);
+      }));
+    }
+
+    // Marcadores de clues
+    for (const iterator of this.cluesMarkers) {
+      const marker = this.map.addMarkerSync({
+        title: iterator.title,
+        icon: iterator.icon,
+        animation: iterator.animacion,
+        name: iterator.clues,
+        position: {
+          lat: iterator.latitud,
+          lng: iterator.longitude
+        }
+      });
+
+      const htmlInfoWindow = new HtmlInfoWindow();
+      const frame: HTMLElement = document.createElement('div');
+      frame.innerHTML = [
+        '<div class=".div-map">',
+        `<h3 style="color:red">${iterator.title}</h3>`,
+        '<button mat-raised-button>Boton</button>',
+        '</div>'
+        ].join('');
+
+      frame.getElementsByTagName('button')[0].addEventListener('click', (data) => {
+        alert(this.cluesData);
+      });
+
+      htmlInfoWindow.setContent(frame, { width: '280px', height: '100px'});
+
+      this.suscriptions.push(marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe((data) => {
+        // alert('clicked');
+        // alert(data);
+        this.cluesData = marker.get('name');
+        // alert(JSON.stringify(marker.get('styles')));
+        // alert(marker.get('name'));
+        htmlInfoWindow.open(marker);
+      }));
+    }
+    // Marcadores de mao
+
+    for (const iterator of this.maoMarkers) {
+      const marker = this.map.addMarkerSync({
+        title: iterator.title,
+        icon: iterator.icon,
+        animation: iterator.animacion,
+        name: iterator.clues,
+        position: {
+          lat: iterator.latitud,
+          lng: iterator.longitude
+        }
+      });
+
+      const htmlInfoWindow = new HtmlInfoWindow();
+      const frame: HTMLElement = document.createElement('div');
+      frame.innerHTML = [
+        '<div class=".div-map">',
+        `<h3 style="color:red">${iterator.title}</h3>`,
+        '<button mat-raised-button>Boton</button>',
+        '</div>'
+        ].join('');
+
+      frame.getElementsByTagName('button')[0].addEventListener('click', (data) => {
+        alert(this.cluesData);
+      });
+
+      htmlInfoWindow.setContent(frame, { width: '280px', height: '100px'});
+
+      this.suscriptions.push(marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe((data) => {
+        // alert('clicked');
+        // alert(data);
+        this.cluesData = marker.get('name');
+        // alert(JSON.stringify(marker.get('styles')));
+        // alert(marker.get('name'));
+        htmlInfoWindow.open(marker);
+      }));
+    }
   }
 
   /**
@@ -285,29 +368,99 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   generateMapWeb(currentPosition: CoordinatesData) {
     const element = document.getElementById('map_canvas');
 
-    const lnt = new google.maps.LatLng({lat: currentPosition.latitude, lng: currentPosition.longitude});
+    const bounds = new google.maps.LatLngBounds();
+
+    const lnt = this.seeYouLocation ?
+      new google.maps.LatLng({lat: currentPosition.latitude, lng: currentPosition.longitude}) :
+      new google.maps.LatLng({lat: this.cluesMarkers[0].latitud, lng: this.cluesMarkers[0].longitude});
 
     const mapOptions = {
       center: lnt,
-      zoom: 15,
+      zoom: 18,
       tilt: 30
     };
 
     this.map = new google.maps.Map(element, mapOptions);
 
-    const marker = new google.maps.Marker({
-      map: this.map,
-      animation: google.maps.Animation.DROP,
-      position: this.map.getCenter()
-    });
+    // Tu marcador
+    if (this.seeYouLocation) {
 
-    const infoWindow = new google.maps.InfoWindow({
-      content: '<h4>Information!</h4>'
-    });
+      const markerOwn = new google.maps.Marker({
+        map: this.map,
+        animation: google.maps.Animation.DROP,
+        position: lnt
+      });
 
-    google.maps.event.addListener(marker, 'click', () => {
-      infoWindow.open(this.map, marker);
-    });
+      const infoWindowOwn = new google.maps.InfoWindow({
+        content: '<h4>Information! Mi marcador</h4>'
+      });
+
+      google.maps.event.addListener(markerOwn, 'click', () => {
+        infoWindowOwn.open(this.map, markerOwn);
+      });
+
+      bounds.extend(markerOwn.position);
+    }
+
+    // Marcadores generales
+    for (const iterator of this.markers) {
+      const marker = new google.maps.Marker({
+        map: this.map,
+        animation: google.maps.Animation.DROP,
+        position: this.map.getCenter()
+      });
+
+      const infoWindow = new google.maps.InfoWindow({
+        content: '<h4>Information!</h4>'
+      });
+
+      google.maps.event.addListener(marker, 'click', () => {
+        infoWindow.open(this.map, marker);
+      });
+
+      bounds.extend(marker.position);
+    }
+
+    for (const iterator of this.cluesMarkers) {
+
+      console.log(iterator);
+      const mark = new google.maps.LatLng({lat: iterator.latitud, lng: iterator.longitude});
+
+      const marker = new google.maps.Marker({
+        map: this.map,
+        animation: google.maps.Animation.DROP,
+        position: mark
+      });
+
+      const infoWindow = new google.maps.InfoWindow({
+        content: '<h4>Information! clues</h4>'
+      });
+
+      google.maps.event.addListener(marker, 'click', () => {
+        infoWindow.open(this.map, marker);
+      });
+
+      bounds.extend(marker.position);
+    }
+
+    if (!this.seeYouLocation) {
+      google.maps.event.addListener(this.map, 'zoom_changed', () => {
+        if (this.map.getZoom() > 18 && this.initialZoom) {
+          this.map.setZoom(18);
+          this.initialZoom = false;
+        }
+      });
+    }
+
+    this.map.fitBounds(bounds);
+
+
+
+    // const zoom = this.map.getZoom();
+    // if (this.map.getZoom() > 18) {
+    //   this.map.setZoom(18);
+    // }
+
   }
 
   /**

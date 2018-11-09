@@ -30,25 +30,25 @@ export class ConsultationFolioComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit(form: NgForm) {
+  async onSubmit(form: NgForm) {
 
     // this.router.navigate(['/consultation/results']);
     const dialgRef = this.dialog.open(LoadModalComponent, { width: '350px', height: '400px'});
-    this.consultationService.getValidity(form.value.curp, form.value.folio)
+    await this.consultationService.getValidity(form.value.curp, form.value.folio)
       .toPromise().then((data: any) => {
-        // console.log(data);
+         console.log(data);
         if (data.data && data.data.length === 1) {
           // console.log(data.data);
-          data.data.forEach(element => {
+          // data.data.forEach(element => {
 
             this.consultationService.setPacienteData({
-              curp: element.PACIENTE.CURP, folio: element.SEGURO_POPULAR.FOLIO,
-              nombre: element.PACIENTE.NOMBRE, ap_materno: element.PACIENTE.AP_MATERNO,
-              ap_paterno: element.PACIENTE.AP_PATERNO, complement: element
+              curp: data.data[0].PACIENTE.CURP, folio:  data.data[0].SEGURO_POPULAR.FOLIO,
+              nombre:  data.data[0].PACIENTE.NOMBRE, ap_materno:  data.data[0].PACIENTE.AP_MATERNO,
+              ap_paterno:  data.data[0].PACIENTE.AP_PATERNO, complement:  data.data[0]
             });
             dialgRef.close();
             this.router.navigate(['/consultation/results']);
-          });
+          // });
 
         } else {
           // Enviar mensaje de que vaya a su módulo más cercano

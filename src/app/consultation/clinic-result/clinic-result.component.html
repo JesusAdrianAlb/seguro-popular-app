@@ -1,4 +1,4 @@
-<div *ngIf="isReady" class="full-view">
+<div class="full-view">
     <div class="content">
       <div class="info">
         <div>
@@ -11,12 +11,12 @@
         </div>
         <div>
           <p>Direccion:</p>
-          <p *ngIf="cluesData"><b>{{cluesData.DIRECCION}}</b></p>
+          <p *ngIf="cluesData"><b>{{cluesData[0].direction}}</b></p>
           <p *ngIf="!cluesData"><b>No fue posible encontrar la dirección</b></p>
         </div>
       </div>
-      <div class="map-content">
-        <app-clues-ubication></app-clues-ubication>
+      <div  *ngIf="isReady" class="map-content">
+        <app-clues-ubication [seeYouLocation]="false" [cluesMarkers]="cluesData"></app-clues-ubication>
       </div>
     </div>
     <app-footer class="footer"></app-footer>

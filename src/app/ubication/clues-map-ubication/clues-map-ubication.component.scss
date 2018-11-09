@@ -1,0 +1,20 @@
+.full-view-abs {
+    position: absolute;
+    height: 96.5%;
+    width: 100%;
+}
+
+.full-view-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    height: 100%;
+
+    .map-container {
+        // display: grid;
+        // grid-auto-columns: 1fr;
+        // grid-template-rows: auto 1fr;
+        height: auto;
+    }
+
+}

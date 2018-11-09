@@ -1,9 +1,23 @@
-.content {
+.full-view {
+
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
-    .info {
+    grid-template-rows: 1fr auto;
+    .content {
         display: grid;
         grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        .info {
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto;
+            p {
+                margin: 5px;
+            }
+        }
+        .map-container {
+            height: 100%;
+        }
     }
 }

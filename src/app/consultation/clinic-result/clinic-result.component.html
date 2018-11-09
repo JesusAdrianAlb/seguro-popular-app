@@ -1,12 +1,22 @@
 <div *ngIf="isReady" class="full-view">
     <div class="content">
       <div class="info">
-        <p>{{data.curp}}</p>
-        <p>{{data.folio}}</p>
-        <p>{{data.paciente}}</p>
+        <div>
+          <p>Paciente:</p>
+          <p><b>{{data.paciente}}</b></p>
+        </div>
+        <div>
+          <p>Pertenece a:</p>
+          <p><b>{{data.complement.CLUES.NOMBRE_UNIDAD}}</b></p>
+        </div>
+        <div>
+          <p>Direccion:</p>
+          <p *ngIf="cluesData"><b>{{cluesData.DIRECCION}}</b></p>
+          <p *ngIf="!cluesData"><b>No fue posible encontrar la dirección</b></p>
+        </div>
       </div>
-      <div id="map-canvas">
-
+      <div class="map-content">
+        <app-clues-ubication></app-clues-ubication>
       </div>
     </div>
     <app-footer class="footer"></app-footer>

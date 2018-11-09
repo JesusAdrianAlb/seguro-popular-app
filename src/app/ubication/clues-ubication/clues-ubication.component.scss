@@ -1,4 +1,10 @@
-.full-viewport {
-    width: 100vw;
+
+
+.full-content, .full-viewport {
+    // display: grid;
+    // grid-template-columns: 1fr;
+    // grid-template-rows: 1fr auto;
+    // position: absolute;
     height: 100%;
+    width: 100%;
 }

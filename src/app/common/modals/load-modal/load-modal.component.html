@@ -1,5 +1,6 @@
 <div class="modal" fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="center center">
   <mat-spinner></mat-spinner>
   <p>Solicitando información...</p>
+  <p *ngIf="data">{{data.message}}</p>
   <p>Espere un momento</p>
 </div>

@@ -12,6 +12,7 @@ import { CustomMinLengthDirective } from './directives/custom-min-length.directi
 import { ContentMessageComponent } from './modals/content-message/content-message.component';
 import { ValidityStatusPipe } from './pipes/validity-status.pipe';
 import { LoadModalComponent } from './modals/load-modal/load-modal.component';
+import { CluesUbicationComponent } from '../ubication/clues-ubication/clues-ubication.component';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { LoadModalComponent } from './modals/load-modal/load-modal.component';
     ContentMessageComponent,
     ValidityStatusPipe,
     LoadModalComponent,
+    CluesUbicationComponent
   ],
   declarations: [
     FeatureDisabledComponent,
@@ -44,6 +46,7 @@ import { LoadModalComponent } from './modals/load-modal/load-modal.component';
     CustomMinLengthDirective,
     ValidityStatusPipe,
     LoadModalComponent,
+    CluesUbicationComponent,
   ]
 })
 export class BasicModule { }

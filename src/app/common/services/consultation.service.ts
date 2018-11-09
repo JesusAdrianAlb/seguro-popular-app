@@ -21,7 +21,7 @@ export class ConsultationService {
   }
 
   getCluesLocationByCluesKey(cluesKey: string) {
-    return this.http.get(`http://localhost/sissy/Paciente/PacientesFoliosSP/GetCluesLocationByCluesKey?Clues=${cluesKey}`);
+    return this.http.get(`http://localhost/sissy/Paciente/PacientesFoliosSP/GetCluesLocationByCluesKey?CLUES=${cluesKey}`);
   }
 
   setPacienteData(data: {

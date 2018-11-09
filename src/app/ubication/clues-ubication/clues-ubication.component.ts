@@ -31,6 +31,10 @@ import { CoordinatesData } from '../../common/models/geolocation.model';
 import { FeatureDisabledComponent } from '../../common/modals/feature-disabled/feature-disabled.component';
 import { FeatureDeniedComponent } from '../../common/modals/feature-denied/feature-denied.component';
 
+/**
+ * Para evitar errores en typeScript
+ */
+declare var google;
 
 @Component({
   selector: 'app-clues-ubication',
@@ -74,7 +78,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   /**
    * google maps
    */
-  map: GoogleMap;
+  map: any;
   /**
    * Indica la posicion actual del dispositivo
    */
@@ -82,7 +86,13 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   generatedMap = false;
   cluesData: any;
 
+
+  /**
+   * Marcadores a señalar
+   */
   @Input() markers: Marker[] = [];
+  @Input() cluesMarkers: Marker[] = [];
+  @Input() maoMarkers: Marker[] = [];
   // @Input() searchFilter = false;
 
 
@@ -122,6 +132,9 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Checa los permisos del usuario para dispositivos móviles
+   */
   async CheckPermission() {
 
       if (!this.isWeb) {
@@ -179,6 +192,10 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
       }
   }
 
+  /**
+   * Genera el mapa nativamente
+   * @param currentPosition Posicion actual donde la camara se posiciona
+   */
   async generateMap(currentPosition: CoordinatesData) {
 
     this.generatedMap = true;
@@ -218,7 +235,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
       ].join('');
 
     frame.getElementsByTagName('button')[0].addEventListener('click', (data) => {
-      alert(this.cluesData);
+      // alert(this.cluesData);
     });
 
     htmlInfoWindow.setContent(frame, { width: '280px', height: '100px'});
@@ -233,16 +250,71 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
     }));
   }
 
+  /**
+   * Actualiza el mapa en la version SDK
+   */
+  updateMap() {
+
+  }
+
+  /**
+   * Obtiene la posición del dispositivo mediante GPS del dispositivo, sirve igual en WEB
+   */
   async getPosition() {
 
     await this.geolocation.getCurrentPosition().then((data) => {
       this.currentPosition = data.coords;
-      this.generateMap(this.currentPosition);
+      if (this.isWeb) {
+        this.generateMapWeb(this.currentPosition);
+      } else {
+
+        this.generateMap(this.currentPosition);
+      }
+    }).catch(error => {
+      console.log(error);
     });
     this.suscriptions.push(this.geolocation.watchPosition().subscribe((data) => {
       this.currentPosition = data.coords;
       // this.generateMap(this.currentPosition);
     }));
+  }
+
+  /**
+   * Generación de mapa con la API Web
+   */
+  generateMapWeb(currentPosition: CoordinatesData) {
+    const element = document.getElementById('map_canvas');
+
+    const lnt = new google.maps.LatLng({lat: currentPosition.latitude, lng: currentPosition.longitude});
+
+    const mapOptions = {
+      center: lnt,
+      zoom: 15,
+      tilt: 30
+    };
+
+    this.map = new google.maps.Map(element, mapOptions);
+
+    const marker = new google.maps.Marker({
+      map: this.map,
+      animation: google.maps.Animation.DROP,
+      position: this.map.getCenter()
+    });
+
+    const infoWindow = new google.maps.InfoWindow({
+      content: '<h4>Information!</h4>'
+    });
+
+    google.maps.event.addListener(marker, 'click', () => {
+      infoWindow.open(this.map, marker);
+    });
+  }
+
+  /**
+   * Actualiza el mapa en la versión WEB
+   */
+  updateMapWeb() {
+
   }
 
 }

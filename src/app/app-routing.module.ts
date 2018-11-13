@@ -14,7 +14,7 @@ const routes: Routes = [
   },
   {
     path: 'ubication',
-    loadChildren: './ubication/ubication.module#CluesUbicationModule'
+    loadChildren: './ubication/ubication.module#CluesUbicationModule',
   },
   {
     path: 'prevention',

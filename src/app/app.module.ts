@@ -25,6 +25,7 @@ import { ConsultationService } from './common/services/consultation.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ContentMessageComponent } from './common/modals/content-message/content-message.component';
 import { LoadModalComponent } from './common/modals/load-modal/load-modal.component';
+import { UbicationService } from './common/services/ubication.service';
 
 
 
@@ -85,6 +86,7 @@ export class CustumErrorHandler implements ErrorHandler {
     IonicErrorHandler,
     [{provide: ErrorHandler, useClass: CustumErrorHandler}],
     ConsultationService,
+    UbicationService,
   ],
   bootstrap: [
     AppComponent

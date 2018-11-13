@@ -31,6 +31,10 @@ import { CoordinatesData } from '../../common/models/geolocation.model';
 import { FeatureDisabledComponent } from '../../common/modals/feature-disabled/feature-disabled.component';
 import { FeatureDeniedComponent } from '../../common/modals/feature-denied/feature-denied.component';
 import { MarkerData } from '../../common/models/marker-data.models';
+import { PermissionService } from '../../common/services/permission.service';
+import { DevicePlatform } from '../../common/models/device-platform.model';
+import { Permission } from '../../common/enums/permission.enum';
+import { PluginEnabled } from '../../common/enums/enabled-plugin.enum';
 
 /**
  * Para evitar errores en typeScript
@@ -88,6 +92,18 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   cluesData: any;
 
   initialZoom = true;
+  /**
+   * Dispositivo que usa la aplicación
+   */
+  devicePlatform: DevicePlatform;
+  /**
+   * Valor de enumerable que contiene si existe permiso de ubicacion
+   */
+  locationPermision: Permission;
+  /**
+   * Valor de enumerable que contiene si la ubicación esta habilitada
+   */
+  locationEnabled: PluginEnabled;
 
 
   /**
@@ -106,25 +122,46 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
    * @param diagnostic Elemento que obtiene los permisos y solicita permisos a los plugins del celular
    * @param dialog dialog de apertura para indicaciones
    */
-  constructor(private geolocation: Geolocation, private platform: Platform,
+  constructor(private geolocation: Geolocation,
+    private permissionService: PermissionService,
+    private platform: Platform,
     private diagnostic: Diagnostic, private dialog: MatDialog) {
    }
 
-  async ngOnInit() {
+  ngOnInit() {
 
-    this.readyDevice = await this.platform.ready().then(() => {
-      return true;
+    this.platform.ready().then(async () => {
+      this.devicePlatform = this.permissionService.getDevice();
+      if (this.devicePlatform) {
+      } else {
+        this.devicePlatform = {
+          isAndroid: false,
+          isIos: false,
+          isWeb: false
+        };
+        this.devicePlatform.isAndroid = this.platform.is('android');
+        this.devicePlatform.isIos = this.platform.is('ios');
+        this.devicePlatform.isWeb = !this.devicePlatform.isAndroid && !this.devicePlatform.isIos ? true : false;
+        this.permissionService.setDevice(this.devicePlatform);
+      }
+      this.locationEnabled = await this.permissionService.getLocationEnabled(this.devicePlatform);
+
+      switch (this.locationEnabled) {
+        case PluginEnabled.DISABLED:
+        break;
+
+        case PluginEnabled.ENABLED:
+        break;
+
+        case PluginEnabled.ERROR:
+        break;
+
+        case PluginEnabled.UNKNOWN:
+        break;
+      }
     }).catch(error => {
-      return false;
+
     });
-
-
-    this.isAndroid = this.platform.is('android');
-    this.isIos = this.platform.is('ios');
-    this.isWeb = !this.isAndroid && !this.isIos ? true : false;
-
-    this.CheckPermission();
-    this.getPosition();
 
   }
 
@@ -385,6 +422,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
     // Tu marcador
     if (this.seeYouLocation) {
 
+      // console.table(this.currentPosition);
       const markerOwn = new google.maps.Marker({
         map: this.map,
         animation: google.maps.Animation.DROP,
@@ -423,7 +461,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
     for (const iterator of this.cluesMarkers) {
 
-      console.log(iterator);
+      // console.log(iterator);
       const mark = new google.maps.LatLng({lat: iterator.latitud, lng: iterator.longitude});
 
       const marker = new google.maps.Marker({
@@ -433,7 +471,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
       });
 
       const infoWindow = new google.maps.InfoWindow({
-        content: '<h4>Information! clues</h4>'
+        content: '<h4>' + iterator.clues + '</h4>'
       });
 
       google.maps.event.addListener(marker, 'click', () => {

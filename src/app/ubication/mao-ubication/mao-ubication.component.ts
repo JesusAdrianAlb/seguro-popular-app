@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UbicationService } from '../../common/services/ubication.service';
 import { MatDialog } from '@angular/material';
 import { ContentMessageComponent } from '../../common/modals/content-message/content-message.component';
+import { MarkerData } from '../../common/models/marker-data.models';
 
 @Component({
   selector: 'app-mao-ubication',
@@ -13,6 +14,9 @@ export class MaoUbicationComponent implements OnInit {
   isReady = false;
   cluesLocation: any[] = [];
 
+  cluesSelected: any[] = [];
+  markers: MarkerData[] = [];
+
   constructor(private ubicationService: UbicationService,
     private dialog: MatDialog) { }
 
@@ -20,7 +24,23 @@ export class MaoUbicationComponent implements OnInit {
     await this.ubicationService.getAllCluesLocation().toPromise()
     .then((locations: any[]) => {
       this.cluesLocation = locations;
-      console.table(location);
+      this.cluesSelected = this.cluesLocation.filter( x => x.ID_INSTITUCION === '1');
+      for (const clues of this.cluesSelected) {
+        const marker: MarkerData = {
+          longitude: clues.LONGITUD,
+          latitud: clues.LATITUD,
+          title: clues.INSTITUCION,
+          clues: clues.INSTITUCION,
+          data: clues,
+          animacion: 'DROP',
+          icon: 'red'
+        };
+
+        this.markers = [...this.markers, marker];
+
+      }
+      // console.table(this.markers);
+      console.table(this.cluesLocation);
     }).catch(error => {
       console.log(error);
       this.dialog.open(ContentMessageComponent,

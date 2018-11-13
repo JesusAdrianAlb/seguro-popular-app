@@ -26,6 +26,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ContentMessageComponent } from './common/modals/content-message/content-message.component';
 import { LoadModalComponent } from './common/modals/load-modal/load-modal.component';
 import { UbicationService } from './common/services/ubication.service';
+import { PermissionService } from './common/services/permission.service';
+import { AuthService } from './common/services/auth.service';
 
 
 
@@ -87,6 +89,8 @@ export class CustumErrorHandler implements ErrorHandler {
     [{provide: ErrorHandler, useClass: CustumErrorHandler}],
     ConsultationService,
     UbicationService,
+    PermissionService,
+    AuthService
   ],
   bootstrap: [
     AppComponent

@@ -25,7 +25,8 @@ export class ConsultationService {
   }
 
   setPacienteData(data: {
-    curp: string; folio: string; ap_paterno: string; ap_materno: string; nombre: string; complement: any
+    curp: string; folio: string; ap_paterno: string; ap_materno: string;
+    nombre: string; complement: any
   }) {
     console.log(data);
     this.CURP = data.curp;

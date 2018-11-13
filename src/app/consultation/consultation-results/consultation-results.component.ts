@@ -16,12 +16,12 @@ export class ConsultationResultsComponent implements OnInit {
 
   async ngOnInit() {
     this.data = this.consultationService.getPacienteData();
-    this.cluesData = await this.consultationService.getCluesLocationByCluesKey(this.data.complement.CLUES.CLUES)
-      .toPromise().then((data) => {
-        return data;
-      }).catch(error => {
-        console.log(error);
-      });
+    // this.cluesData = await this.consultationService.getCluesLocationByCluesKey(this.data.complement.CLUES.CLUES)
+    //   .toPromise().then((data) => {
+    //     return data;
+    //   }).catch(error => {
+    //     console.log(error);
+    //   });
 
 
     this.isReady = true;

@@ -1,5 +1,5 @@
 
-<div class="full-view">
+<div *ngIf="!user" class="full-view">
     <div> 
         <p class="title-text">
           <mat-icon>local_hospital</mat-icon>
@@ -34,5 +34,29 @@
       </form>
     </div>
     <app-footer class="footer"></app-footer>
-  </div>
+</div>
+
+<div *ngIf="isReady && user" class="full-view">
+    <div class="content">
+      <div class="info">
+        <div>
+          <p>Paciente:</p>
+          <p><b>{{data.paciente}}</b></p>
+        </div>
+        <div>
+          <p>Pertenece a:</p>
+          <p><b>{{data.complement.CLUES.NOMBRE_UNIDAD}}</b></p>
+        </div>
+        <div>
+          <p>Direccion:</p>
+          <p *ngIf="cluesData"><b>{{cluesData[0].direction}}</b></p>
+          <p *ngIf="!cluesData"><b>No fue posible encontrar la dirección</b></p>
+        </div>
+      </div>
+      <div  *ngIf="isReady" class="map-content">
+        <app-clues-ubication [seeYouLocation]="false" [cluesMarkers]="cluesData"></app-clues-ubication>
+      </div>
+    </div>
+    <app-footer class="footer"></app-footer>
+</div>
   

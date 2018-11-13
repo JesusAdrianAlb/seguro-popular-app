@@ -1,8 +1,17 @@
 <div fxLayout="row" class="header" fxLayoutAlign="space-between center">
     <button (click)="onToggleSidenav()" mat-icon-button>
         <mat-icon class="icon">menu</mat-icon>
-    </button> 
-    <button type="button" routerLink="/information" mat-icon-button>
-        <mat-icon class="icon">info</mat-icon>
     </button>
+    <div fxLayout="row" fxLayoutGap="20px">
+        <button *ngIf="user" mat-button [matMenuTriggerFor]="menu">
+            <mat-icon matTooltip="{{user.name}}" class="icon">person</mat-icon>
+        </button>
+         <mat-menu #menu="matMenu">
+              <button type="button" (click)="onLogOut()" 
+              mat-menu-item>Cerrar Sesión</button>
+        </mat-menu>
+        <button type="button" routerLink="/information" mat-icon-button>
+            <mat-icon class="icon">info</mat-icon>
+        </button>
+    </div> 
 </div>

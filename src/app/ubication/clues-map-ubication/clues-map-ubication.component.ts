@@ -10,6 +10,7 @@ export class CluesMapUbicationComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
   }
 
 }

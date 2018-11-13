@@ -1,3 +1,7 @@
-<div>
-  <app-clues-ubication [seeYouLocation]="false" [markers]="[]"></app-clues-ubication>
-</div>
+<div *ngIf="isReady" class="full-view-content">
+    <div class="map-container">
+        <app-clues-ubication [seeYouLocation]="true">
+        </app-clues-ubication>
+    </div>
+    <app-footer class="footer"></app-footer>
+  </div>

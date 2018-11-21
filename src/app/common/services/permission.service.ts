@@ -18,19 +18,22 @@ export class PermissionService {
 
   isReady = false;
 
-  constructor(private platform: Platform,
-    private diagnostic: Diagnostic) {
+  constructor(private diagnostic: Diagnostic) {
 
     }
 
   /**
-   * DEPRECATED: Obtiene la plataforma del dispositivo que se está usando en la aplicación.
+   * Obtiene la plataforma del dispositivo que se está usando en la aplicación.
    * Platform no funciona en servicios.
    */
   getDevice(): DevicePlatform {
       return this.devicePlatform;
   }
 
+  /**
+   * Establece el dispositivo
+   * @param device dispositivo que usa la aplicacion
+   */
   setDevice(device: DevicePlatform) {
     this.devicePlatform = device;
   }

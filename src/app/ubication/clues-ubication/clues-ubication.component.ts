@@ -6,8 +6,7 @@ import { Subscription } from 'rxjs';
 /**
  * Plugins imports for native devices
  */
-import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { Platform } from '@ionic/angular';
 import { MatDialog } from '@angular/material';
 /**
@@ -15,26 +14,24 @@ import { MatDialog } from '@angular/material';
  */
 import {
   GoogleMaps,
-  GoogleMap,
   GoogleMapsEvent,
   GoogleMapOptions,
-  CameraPosition,
-  MarkerOptions,
   Marker,
-  Environment,
   HtmlInfoWindow,
+  Circle,
 } from '@ionic-native/google-maps/ngx';
-import { CoordinatesData } from '../../common/models/geolocation.model';
+
 /**
  * Components for behaivior
  */
 import { FeatureDisabledComponent } from '../../common/modals/feature-disabled/feature-disabled.component';
-import { FeatureDeniedComponent } from '../../common/modals/feature-denied/feature-denied.component';
 import { MarkerData } from '../../common/models/marker-data.models';
 import { PermissionService } from '../../common/services/permission.service';
 import { DevicePlatform } from '../../common/models/device-platform.model';
 import { Permission } from '../../common/enums/permission.enum';
 import { PluginEnabled } from '../../common/enums/enabled-plugin.enum';
+import { ContentMessageComponent } from '../../common/modals/content-message/content-message.component';
+import { UbicationService } from '../../common/services/ubication.service';
 
 /**
  * Para evitar errores en typeScript
@@ -52,34 +49,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
    * Suscripciones del componente
    */
   suscriptions: Subscription[]  = [];
-  /**
-   * Indica si el componente es llamado en android
-   */
-  isAndroid = false;
-  /**
-   * Indica si el componente es llamado en ios
-   */
-  isIos = false;
-  /**
-   * Indica si el component es llamado en web
-   */
-  isWeb = false;
-  /**
-   * Indica si el dispositivo está listo para las funcionalidades nativas
-   */
-  readyDevice = false;
-  /**
-   * Indica si se tiene habilitado el localizador de los celulares
-   */
-  hasLocationEnabled = false;
-  /**
-   * Indica si se tiene permiso a la localización del telefono
-   */
-  hasLocationPermission = false;
-  /**
-   * Indica si el permiso de ubicacion esta negado
-   */
-  locationPermissionDenied = false;
+
   /**
    * google maps
    */
@@ -87,7 +57,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   /**
    * Indica la posicion actual del dispositivo
    */
-  currentPosition: CoordinatesData;
+  currentPosition: Geoposition;
   generatedMap = false;
   cluesData: any;
 
@@ -115,6 +85,10 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   @Input() seeYouLocation = false;
   // @Input() searchFilter = false;
 
+  /**
+   * Marcadores activos en el mapa
+   */
+  private activeMarkers: Marker[] = [];
 
   /**
    * @param geolocation Geoposicion de dispositivo
@@ -122,10 +96,11 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
    * @param diagnostic Elemento que obtiene los permisos y solicita permisos a los plugins del celular
    * @param dialog dialog de apertura para indicaciones
    */
-  constructor(private geolocation: Geolocation,
+  constructor(
     private permissionService: PermissionService,
+    private ubicationService: UbicationService,
     private platform: Platform,
-    private diagnostic: Diagnostic, private dialog: MatDialog) {
+    private dialog: MatDialog) {
    }
 
   ngOnInit() {
@@ -148,19 +123,32 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
       switch (this.locationEnabled) {
         case PluginEnabled.DISABLED:
+        this.dialog.open(FeatureDisabledComponent , { width: '350px', data: { title: 'Ubicación deshabilitada',
+        message: 'Es necesario habilitar el GPS del dispositivo' }});
         break;
 
         case PluginEnabled.ENABLED:
+        if (this.devicePlatform.isAndroid || this.devicePlatform.isIos) {
+          this.generateMap();
+        } else if (this.devicePlatform.isWeb) {
+          this.generateMapWeb();
+        }
         break;
 
         case PluginEnabled.ERROR:
+        this.dialog.open(ContentMessageComponent, { width: '350px',
+        data: { title: 'Error', icon: 'warning', color: 'red',
+          message: 'Ocurrío un error inesperado, vuelva a intentarlo más tarde' }});
         break;
 
         case PluginEnabled.UNKNOWN:
+        this.generateMapWeb();
         break;
       }
     }).catch(error => {
-
+      this.dialog.open(ContentMessageComponent, { width: '350px',
+        data: { title: 'Error', icon: 'warning', color: 'red',
+          message: 'Ocurrío un error inesperado, vuelva a intentarlo más tarde' }});
     });
 
   }
@@ -173,78 +161,28 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Checa los permisos del usuario para dispositivos móviles
-   */
-  async CheckPermission() {
-
-      if (!this.isWeb) {
-
-        this.hasLocationEnabled = await this.diagnostic.isLocationEnabled().then((result: boolean) => {
-          return result;
-        }).catch((error) => {
-          return false;
-        });
-        if (this.hasLocationEnabled) {
-          // Verificar los permisos de la aplicacion en cuanto ubicacion
-          await this.diagnostic.getLocationAuthorizationStatus().then(async (status: any) => {
-            switch (status) {
-              case 'NOT_REQUESTED':
-                await this.diagnostic.requestLocationAuthorization('always');
-              break;
-              case 'DENIED':
-              this.locationPermissionDenied = true;
-                this.dialog.open(FeatureDeniedComponent, { width: '350px', data: {title: 'Ubicación sin permisos',
-                message: 'Entre a Administrador de aplicaciones para darle permisos'}});
-              break;
-              case 'GRANTED':
-              this.hasLocationPermission = true;
-              break;
-            }
-          }).catch((error) => {
-
-          });
-
-          if (!this.hasLocationPermission) {
-            this.hasLocationPermission = await this.diagnostic.isLocationAuthorized().then((result: any) => {
-              if (result) {
-                return true;
-              } else {
-                this.locationPermissionDenied = true;
-                this.dialog.open(FeatureDeniedComponent, { width: '350px', data: { title: 'Ubicación sin permisos',
-                messsage: 'No se puede ubicar su centro de salud si no se da permsisos a la aplicación de ubicación.' +
-                'Entre a Administrador de aplicaciones para darle permisos'} });
-                return false;
-              }
-            }).catch((error) => {
-              return false;
-            });
-          }
-
-        } else {
-          // No se tiene el GPS activado, enviar aleta y prompt
-          this.dialog.open(FeatureDisabledComponent, { width: '350px',
-          data: { title: 'Ubicación desactivada',
-          message: 'Es necesario activar la ubicación para localizar su centro de salud más cercano'}});
-
-        }
-      } else {
-        // La ubicacion en web funiona normal. Utilizando geolocation
-      }
-  }
 
   /**
    * Genera el mapa nativamente
    * @param currentPosition Posicion actual donde la camara se posiciona
    */
-  async generateMap(currentPosition: CoordinatesData) {
+  async generateMap(suscribePosition: boolean = true) {
 
-    this.generatedMap = true;
+    this.currentPosition = await this.ubicationService.getCurrentPosition();
+
+    if (suscribePosition) {
+      this.suscriptions.push(this.ubicationService.getWatchPosition().subscribe((position: Geoposition) => {
+        this.currentPosition = position;
+        // update map
+        this.updateMap(position);
+      }));
+    }
+
     const mapOptions: GoogleMapOptions = {
       camera: {
         target: {
-          lat: currentPosition.latitude,
-          lng: currentPosition.longitude
+          lat: this.currentPosition.coords.latitude,
+          lng: this.currentPosition.coords.longitude
         },
         zoom: 15,
         tilt: 30
@@ -255,9 +193,51 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
     await this.map.one(GoogleMapsEvent.MAP_READY);
 
+    // tu marcador
+    const markerOwn: Circle = this.map.addCircleSync({
+      title: 'Tu ubicación',
+      fillColor: '#3779e0',
+      strokeColor: '#3779e0',
+      radius: 1,
+      fillOpacity: 1,
+      strokeWeight: 0,
+      animation: 'DROP',
+      name: 'Tu ubicación',
+      center: {
+        lat: this.currentPosition.coords.latitude,
+        lng: this.currentPosition.coords.longitude
+      },
+      clickable: true
+    });
+
+    const htmlInfoWindowOwn = new HtmlInfoWindow();
+    const frameOwn: HTMLElement = document.createElement('div');
+    frameOwn.innerHTML = [
+      '<div class=".div-map">',
+      `<h3 style="color:red">Tu ubicacion</h3>`,
+      '<button mat-raised-button>Boton</button>',
+      '</div>'
+      ].join('');
+
+      frameOwn.getElementsByTagName('button')[0].addEventListener('click', (data) => {
+      alert(this.cluesData);
+    });
+
+    htmlInfoWindowOwn.setContent(frameOwn, { width: '280px', height: '100px'});
+
+    this.suscriptions.push(markerOwn.on(GoogleMapsEvent.CIRCLE_CLICK).subscribe((data) => {
+      // alert('clicked');
+      // alert(data);
+      // this.cluesData = markerOwn.get('name');
+      // alert(this.cluesData);
+      // alert(JSON.stringify(marker.get('styles')));
+      // alert(marker.get('name'));
+      // htmlInfoWindowOwn.open(markerOwn);
+    }));
+
     // Marcadores generales
     for (const iterator of this.markers) {
-      const marker = this.map.addMarkerSync({
+      const marker: Marker = this.map.addMarkerSync({
         title: iterator.title,
         icon: iterator.icon,
         animation: iterator.animacion,
@@ -330,8 +310,8 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
         htmlInfoWindow.open(marker);
       }));
     }
-    // Marcadores de mao
 
+    // Marcadores de mao
     for (const iterator of this.maoMarkers) {
       const marker = this.map.addMarkerSync({
         title: iterator.title,
@@ -371,44 +351,34 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Actualiza el mapa en la version SDK
+   * Actualiza el mapa
+   * @param position posicion del marcador de posicion del dispositivo
    */
-  updateMap() {
+  updateMap(position: Geoposition) {
 
   }
 
-  /**
-   * Obtiene la posición del dispositivo mediante GPS del dispositivo, sirve igual en WEB
-   */
-  async getPosition() {
-
-    await this.geolocation.getCurrentPosition().then((data) => {
-      this.currentPosition = data.coords;
-      if (this.isWeb) {
-        this.generateMapWeb(this.currentPosition);
-      } else {
-
-        this.generateMap(this.currentPosition);
-      }
-    }).catch(error => {
-      console.log(error);
-    });
-    this.suscriptions.push(this.geolocation.watchPosition().subscribe((data) => {
-      this.currentPosition = data.coords;
-      // this.generateMap(this.currentPosition);
-    }));
-  }
 
   /**
    * Generación de mapa con la API Web
    */
-  generateMapWeb(currentPosition: CoordinatesData) {
+  async generateMapWeb(suscribePosition: boolean = false) {
     const element = document.getElementById('map_canvas');
 
     const bounds = new google.maps.LatLngBounds();
 
+    this.currentPosition = await this.ubicationService.getCurrentPosition();
+
+    if (suscribePosition) {
+      this.suscriptions.push(this.ubicationService.getWatchPosition().subscribe((position: Geoposition) => {
+        this.currentPosition = position;
+        // update map
+        this.updateMapWeb(position);
+      }));
+    }
+
     const lnt = this.seeYouLocation ?
-      new google.maps.LatLng({lat: currentPosition.latitude, lng: currentPosition.longitude}) :
+      new google.maps.LatLng({lat: this.currentPosition.coords.latitude, lng: this.currentPosition.coords.longitude}) :
       new google.maps.LatLng({lat: this.cluesMarkers[0].latitud, lng: this.cluesMarkers[0].longitude});
 
     const mapOptions = {
@@ -426,7 +396,15 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
       const markerOwn = new google.maps.Marker({
         map: this.map,
         animation: google.maps.Animation.DROP,
-        position: lnt
+        position: lnt,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: '#3779e0',
+          stokeColor: '#3779e0',
+          scale: 10,
+          fillOpacity: 1,
+          strokeWeight: 0,
+        }
       });
 
       const infoWindowOwn = new google.maps.InfoWindow({
@@ -492,20 +470,15 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
     this.map.fitBounds(bounds);
 
-
-
-    // const zoom = this.map.getZoom();
-    // if (this.map.getZoom() > 18) {
-    //   this.map.setZoom(18);
-    // }
-
   }
 
   /**
-   * Actualiza el mapa en la versión WEB
+   * Actualiza el mapa WEB
+   * @param position posicion del marcador de posicion del dispositivo
    */
-  updateMapWeb() {
+  updateMapWeb(position: Geoposition) {
 
   }
+
 
 }

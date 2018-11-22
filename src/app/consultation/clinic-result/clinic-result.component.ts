@@ -31,6 +31,10 @@ export class ClinicResultComponent implements OnInit {
     .toPromise().then((cluesData: any) => {
       if (cluesData) {
         this.cluesData = [{
+          title: 'Titulo',
+          icon: 'RED',
+          animation: 'DROP',
+          clues: this.data.complement.CLUES.NOMBRE_UNIDAD,
           latitud: cluesData.LATITUD,
           longitude: cluesData.LONGITUD,
           direction: cluesData.DIRECCION

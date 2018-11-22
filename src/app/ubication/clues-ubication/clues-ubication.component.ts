@@ -19,6 +19,11 @@ import {
   Marker,
   HtmlInfoWindow,
   Circle,
+  GoogleMap,
+  LatLng,
+  LatLngBounds,
+  CameraPosition,
+  ILatLng,
 } from '@ionic-native/google-maps/ngx';
 
 /**
@@ -32,6 +37,8 @@ import { Permission } from '../../common/enums/permission.enum';
 import { PluginEnabled } from '../../common/enums/enabled-plugin.enum';
 import { ContentMessageComponent } from '../../common/modals/content-message/content-message.component';
 import { UbicationService } from '../../common/services/ubication.service';
+import { Clues } from '../../common/models/clues.model';
+import { LoadModalComponent } from '../../common/modals/load-modal/load-modal.component';
 
 /**
  * Para evitar errores en typeScript
@@ -53,7 +60,12 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   /**
    * google maps
    */
-  map: any;
+  map: GoogleMap;
+  /**
+   * Mapa version web
+   */
+  mapWeb: any;
+  mapRoute: any;
   /**
    * Indica la posicion actual del dispositivo
    */
@@ -75,6 +87,15 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
    */
   locationEnabled: PluginEnabled;
 
+  startRoute = false;
+
+  origin: LatLng;
+
+  destiny: LatLng;
+
+  directionService = new google.maps.DirectionsService();
+
+  directionDisplay = new google.maps.DirectionsRenderer();
 
   /**
    * Marcadores a señalar
@@ -82,13 +103,10 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   @Input() markers: MarkerData[] = [];
   @Input() cluesMarkers: MarkerData[] = [];
   @Input() maoMarkers: MarkerData[] = [];
+  @Input() allClues: Clues[] = [];
   @Input() seeYouLocation = false;
+  @Input() mode: string;
   // @Input() searchFilter = false;
-
-  /**
-   * Marcadores activos en el mapa
-   */
-  private activeMarkers: Marker[] = [];
 
   /**
    * @param geolocation Geoposicion de dispositivo
@@ -169,6 +187,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   async generateMap(suscribePosition: boolean = true) {
 
     this.currentPosition = await this.ubicationService.getCurrentPosition();
+    this.origin = new LatLng(this.currentPosition.coords.latitude, this.currentPosition.coords.longitude);
 
     if (suscribePosition) {
       this.suscriptions.push(this.ubicationService.getWatchPosition().subscribe((position: Geoposition) => {
@@ -193,50 +212,58 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
     await this.map.one(GoogleMapsEvent.MAP_READY);
 
+    const markersBounds: LatLng[] = [];
+    let markersBoundsMap: LatLngBounds;
     // tu marcador
-    const markerOwn: Circle = this.map.addCircleSync({
-      title: 'Tu ubicación',
-      fillColor: '#3779e0',
-      strokeColor: '#3779e0',
-      radius: 1,
-      fillOpacity: 1,
-      strokeWeight: 0,
-      animation: 'DROP',
-      name: 'Tu ubicación',
-      center: {
-        lat: this.currentPosition.coords.latitude,
-        lng: this.currentPosition.coords.longitude
-      },
-      clickable: true
-    });
+    if (this.seeYouLocation) {
 
-    const htmlInfoWindowOwn = new HtmlInfoWindow();
-    const frameOwn: HTMLElement = document.createElement('div');
-    frameOwn.innerHTML = [
-      '<div class=".div-map">',
-      `<h3 style="color:red">Tu ubicacion</h3>`,
-      '<button mat-raised-button>Boton</button>',
-      '</div>'
-      ].join('');
+      const tmp = new LatLng(this.currentPosition.coords.latitude, this.currentPosition.coords.longitude);
+      markersBounds.push(tmp);
+      const markerOwn: Circle = this.map.addCircleSync({
+        title: 'Tu ubicación',
+        fillColor: '#3779e0',
+        strokeColor: '#3779e0',
+        radius: 1,
+        fillOpacity: 1,
+        strokeWeight: 0,
+        animation: 'DROP',
+        name: 'Tu ubicación',
+        center: {
+          lat: this.currentPosition.coords.latitude,
+          lng: this.currentPosition.coords.longitude
+        },
+        clickable: true
+      });
 
-      frameOwn.getElementsByTagName('button')[0].addEventListener('click', (data) => {
-      alert(this.cluesData);
-    });
+      const htmlInfoWindowOwn = new HtmlInfoWindow();
+      const frameOwn: HTMLElement = document.createElement('div');
+      frameOwn.innerHTML = [
+        '<div class=".div-map">',
+        `<h3 style="color:red">Tu ubicacion</h3>`,
+        '<button mat-raised-button>Boton</button>',
+        '</div>'
+        ].join('');
+       frameOwn.getElementsByTagName('button')[0].addEventListener('click', (data) => {
+        alert(this.cluesData);
+      });
 
-    htmlInfoWindowOwn.setContent(frameOwn, { width: '280px', height: '100px'});
+      htmlInfoWindowOwn.setContent(frameOwn, { width: '280px', height: '100px'});
 
-    this.suscriptions.push(markerOwn.on(GoogleMapsEvent.CIRCLE_CLICK).subscribe((data) => {
-      // alert('clicked');
-      // alert(data);
-      // this.cluesData = markerOwn.get('name');
-      // alert(this.cluesData);
-      // alert(JSON.stringify(marker.get('styles')));
-      // alert(marker.get('name'));
-      // htmlInfoWindowOwn.open(markerOwn);
-    }));
+      this.suscriptions.push(markerOwn.on(GoogleMapsEvent.CIRCLE_CLICK).subscribe((data) => {
+        // alert('clicked');
+        // alert(data);
+        // this.cluesData = markerOwn.get('name');
+        // alert(this.cluesData);
+        // alert(JSON.stringify(marker.get('styles')));
+        // alert(marker.get('name'));
+        // htmlInfoWindowOwn.open(markerOwn);
+      }));
+    }
 
     // Marcadores generales
     for (const iterator of this.markers) {
+      const tmp = new LatLng(iterator.latitud, iterator.longitude);
+      markersBounds.push(tmp);
       const marker: Marker = this.map.addMarkerSync({
         title: iterator.title,
         icon: iterator.icon,
@@ -275,6 +302,9 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
     // Marcadores de clues
     for (const iterator of this.cluesMarkers) {
+      const tmp = new LatLng(iterator.latitud, iterator.longitude);
+      this.destiny = tmp;
+      markersBounds.push(tmp);
       const marker = this.map.addMarkerSync({
         title: iterator.title,
         icon: iterator.icon,
@@ -313,6 +343,8 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
     // Marcadores de mao
     for (const iterator of this.maoMarkers) {
+      const tmp = new LatLng(iterator.latitud, iterator.longitude);
+      markersBounds.push(tmp);
       const marker = this.map.addMarkerSync({
         title: iterator.title,
         icon: iterator.icon,
@@ -348,6 +380,14 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
         htmlInfoWindow.open(marker);
       }));
     }
+
+    markersBoundsMap = new LatLngBounds(markersBounds);
+
+    this.map.animateCamera({
+      target: markersBoundsMap,
+      tilt: 30,
+      duration: 1000
+    });
   }
 
   /**
@@ -358,6 +398,54 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
   }
 
+  async onCalculateRoute() {
+    const dialogRef = this.dialog.open(LoadModalComponent, { width: '350px', data: { message: 'Buscando ruta de llegada'}});
+    this.startRoute = true;
+    // console.log('onCalculate');
+    const element = document.getElementById('map_canvas_route');
+    const origin = new google.maps.LatLng(this.origin.lat, this.origin.lng);
+    const destiny = new google.maps.LatLng(this.destiny.lat, this.destiny.lng);
+
+    const mapOptions = {
+      center: origin,
+      zoom: 18,
+      tilt: 30
+    };
+
+    this.mapRoute = new google.maps.Map(element, mapOptions);
+    this.directionDisplay.setMap(this.mapRoute);
+    this.directionDisplay.setPanel(document.getElementById('directionsPanel'));
+
+    let request = {
+      origin: origin,
+      destination: destiny,
+      travelMode: 'DRIVING'
+    };
+
+    await this.directionService.route(request, (result, status) => {
+      dialogRef.close();
+      if (status === 'OK') {
+        this.directionDisplay.setDirections(result);
+      }
+    });
+
+    if (this.seeYouLocation) {
+      this.suscriptions.push(this.ubicationService.getWatchPosition().subscribe(async (position: Geoposition) => {
+        this.currentPosition = position;
+        request = {
+          origin: new google.maps.LatLng(this.currentPosition.coords.latitude, this.currentPosition.coords.longitude),
+          destination: destiny,
+          travelMode: 'DRIVING'
+        };
+        await this.directionService.route(request, (result, status) => {
+          if (status === 'OK') {
+            this.directionDisplay.setDirections(result);
+          }
+        });
+      }));
+    }
+
+  }
 
   /**
    * Generación de mapa con la API Web
@@ -369,14 +457,6 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
     this.currentPosition = await this.ubicationService.getCurrentPosition();
 
-    if (suscribePosition) {
-      this.suscriptions.push(this.ubicationService.getWatchPosition().subscribe((position: Geoposition) => {
-        this.currentPosition = position;
-        // update map
-        this.updateMapWeb(position);
-      }));
-    }
-
     const lnt = this.seeYouLocation ?
       new google.maps.LatLng({lat: this.currentPosition.coords.latitude, lng: this.currentPosition.coords.longitude}) :
       new google.maps.LatLng({lat: this.cluesMarkers[0].latitud, lng: this.cluesMarkers[0].longitude});
@@ -387,14 +467,15 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
       tilt: 30
     };
 
-    this.map = new google.maps.Map(element, mapOptions);
+    this.mapWeb = new google.maps.Map(element, mapOptions);
 
     // Tu marcador
     if (this.seeYouLocation) {
 
+      this.origin = new LatLng(this.currentPosition.coords.latitude, this.currentPosition.coords.longitude);
       // console.table(this.currentPosition);
       const markerOwn = new google.maps.Marker({
-        map: this.map,
+        map: this.mapWeb,
         animation: google.maps.Animation.DROP,
         position: lnt,
         icon: {
@@ -412,7 +493,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
       });
 
       google.maps.event.addListener(markerOwn, 'click', () => {
-        infoWindowOwn.open(this.map, markerOwn);
+        infoWindowOwn.open(this.mapWeb, markerOwn);
       });
 
       bounds.extend(markerOwn.position);
@@ -421,9 +502,9 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
     // Marcadores generales
     for (const iterator of this.markers) {
       const marker = new google.maps.Marker({
-        map: this.map,
+        map: this.mapWeb,
         animation: google.maps.Animation.DROP,
-        position: this.map.getCenter()
+        position: this.mapWeb.getCenter()
       });
 
       const infoWindow = new google.maps.InfoWindow({
@@ -431,7 +512,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
       });
 
       google.maps.event.addListener(marker, 'click', () => {
-        infoWindow.open(this.map, marker);
+        infoWindow.open(this.mapWeb, marker);
       });
 
       bounds.extend(marker.position);
@@ -440,10 +521,11 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
     for (const iterator of this.cluesMarkers) {
 
       // console.log(iterator);
+      this.destiny = new LatLng(iterator.latitud, iterator.longitude);
       const mark = new google.maps.LatLng({lat: iterator.latitud, lng: iterator.longitude});
 
       const marker = new google.maps.Marker({
-        map: this.map,
+        map: this.mapWeb,
         animation: google.maps.Animation.DROP,
         position: mark
       });
@@ -453,22 +535,22 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
       });
 
       google.maps.event.addListener(marker, 'click', () => {
-        infoWindow.open(this.map, marker);
+        infoWindow.open(this.mapWeb, marker);
       });
 
       bounds.extend(marker.position);
     }
 
     if (!this.seeYouLocation) {
-      google.maps.event.addListener(this.map, 'zoom_changed', () => {
-        if (this.map.getZoom() > 18 && this.initialZoom) {
-          this.map.setZoom(18);
+      google.maps.event.addListener(this.mapWeb, 'zoom_changed', () => {
+        if (this.mapWeb.getZoom() > 18 && this.initialZoom) {
+          this.mapWeb.setZoom(18);
           this.initialZoom = false;
         }
       });
     }
 
-    this.map.fitBounds(bounds);
+    this.mapWeb.fitBounds(bounds);
 
   }
 
@@ -479,6 +561,5 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   updateMapWeb(position: Geoposition) {
 
   }
-
 
 }

@@ -5,6 +5,36 @@
     // grid-template-columns: 1fr;
     // grid-template-rows: 1fr auto;
     // position: absolute;
+    position: relative;
     height: 100%;
     width: 100%;
+    .actions {
+        width: 100%;
+        background: transparent;
+        position: absolute;
+        bottom: 0;
+        margin: 0 0 10px 0;
+    }
+
+    .route-map-none {
+        display: none;
+        
+    }
+    .route-map {
+        height: 100%;
+        display: grid; 
+        width: 100%; 
+        grid-template-columns: 1fr auto;
+    }
+
+    #directionsPanel {
+        overflow: scroll;
+        max-width: 30vw;
+        max-height: 73vh;
+        position: relative;
+        @media screen and (max-width: 500px) {
+            display: none;
+        }
+    }
+
 }

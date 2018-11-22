@@ -1,6 +1,19 @@
-<div class="full-content">
-    <div id="map_canvas" class="full-viewport">
+<div class="full-content" fxLayout="column">
+    <div *ngIf="!startRoute" id="map_canvas" class="full-viewport">
       
+    </div>
+    <div class="{{startRoute? 'route-map full-viewport route': 'route-map-none full-viewport'}}">
+        <div class="{{startRoute? 'route-map': 'route-map-none'}}"  id="map_canvas_route">
+
+        </div>
+        <div id="directionsPanel"></div>
+    </div>
+    <div *ngIf="mode && mode=='route' && !startRoute" class="actions" 
+    fxFlex="100" fxLayout="row" fxLayoutAlign="center center">
+        <button mat-raised-button type="button"
+        (click)="onCalculateRoute()">
+            Ir a direccion
+        </button>
     </div>
 </div>
 

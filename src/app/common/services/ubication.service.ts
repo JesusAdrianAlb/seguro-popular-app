@@ -22,7 +22,7 @@ export class UbicationService {
   * Obtiene todas las clues del estado de yucatán por default
   */
   getAllCluesLocation() {
-    return this.http.get(`http://localhost/sissy/Paciente/PacientesFoliosSP/GetAllCluesLocation`);
+    return this.http.get(`http://control.repssyuc.gob.mx/sissy/Paciente/PacientesFoliosSP/GetAllCluesLocation`);
   }
 
   /**

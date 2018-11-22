@@ -54,7 +54,9 @@
         </div>
       </div>
       <div  *ngIf="isReady" class="map-content">
-        <app-clues-ubication [seeYouLocation]="false" [cluesMarkers]="cluesData"></app-clues-ubication>
+        <app-clues-ubication [seeYouLocation]="true"
+        [mode]="'route'"
+        [cluesMarkers]="cluesData"></app-clues-ubication>
       </div>
     </div>
     <app-footer class="footer"></app-footer>

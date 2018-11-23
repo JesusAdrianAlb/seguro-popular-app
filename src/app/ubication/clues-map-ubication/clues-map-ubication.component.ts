@@ -3,7 +3,7 @@ import { UbicationService } from '../../common/services/ubication.service';
 import { MatDialog } from '@angular/material';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
 import { Clues } from '../../common/models/clues.model';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { MarkerData } from '../../common/models/marker-data.models';
 import { ContentMessageComponent } from '../../common/modals/content-message/content-message.component';
 import { LoadModalComponent } from '../../common/modals/load-modal/load-modal.component';
@@ -42,9 +42,13 @@ export class CluesMapUbicationComponent implements OnInit, OnDestroy {
           } else {
             this.allClues = data;
             this.filterClues = this.allClues.filter( x => Math.abs(x.LATITUD - this.currentPosition.coords.latitude) < .1
-              && Math.abs(x.LONGITUD - this.currentPosition.coords.longitude) < .1);
+              && Math.abs(x.LONGITUD - this.currentPosition.coords.longitude) < .1 && x.ID_INSTITUCION === '1');
+              if (this.filterClues.length === 0) {
+                this.filterClues = this.allClues.filter( x => Math.abs(x.LATITUD - this.currentPosition.coords.latitude) < .09
+              && Math.abs(x.LONGITUD - this.currentPosition.coords.longitude) < .09 && x.ID_INSTITUCION === '1');
+              }
             // console.table(this.currentPosition.coords);
-            // console.table(this.filterClues);
+            console.table(this.filterClues);
             this.isReady = true;
           }
       }));

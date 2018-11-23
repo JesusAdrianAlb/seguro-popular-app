@@ -15,5 +15,21 @@
             Ir a direccion
         </button>
     </div>
+    <div class="search-bar" fxflex="100" 
+    fxLayout="row" fxLayoutAlign="center center"
+    *ngIf="mode && mode!=='route'">
+        
+        <mat-form-field class="search-input">
+            <input matInput placeholder="Buscar centro de salud" [matAutocomplete]="auto"
+            (input)="filteredClues($event.target.value)">
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.INSTITUCION"
+                (onSelectionChange)="onSelectClues(option)">
+                    {{option.INSTITUCION}}
+                </mat-option>
+            </mat-autocomplete> 
+        </mat-form-field>
+        
+    </div>
 </div>
 

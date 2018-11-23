@@ -2,7 +2,7 @@
  * Core imports dfor angular
  */
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, of } from 'rxjs';
 /**
  * Plugins imports for native devices
  */
@@ -39,6 +39,7 @@ import { ContentMessageComponent } from '../../common/modals/content-message/con
 import { UbicationService } from '../../common/services/ubication.service';
 import { Clues } from '../../common/models/clues.model';
 import { LoadModalComponent } from '../../common/modals/load-modal/load-modal.component';
+import { FormControl } from '@angular/forms';
 
 /**
  * Para evitar errores en typeScript
@@ -97,6 +98,10 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
 
   directionDisplay = new google.maps.DirectionsRenderer();
 
+  filteredOptions: Observable<Clues[]>;
+
+  cluesSelected: Clues;
+
   /**
    * Marcadores a señalar
    */
@@ -108,6 +113,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   @Input() mode: string;
   // @Input() searchFilter = false;
 
+  searchFormControl = new FormControl();
   /**
    * @param geolocation Geoposicion de dispositivo
    * @param platform elemento que indica que plataforma se esta utilizando
@@ -179,6 +185,31 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Filtro de centro de salud
+   * @param value Texto a filtrar
+   */
+  filteredClues(value: string) {
+   if (value.length > 4) {
+     this.filteredOptions = of( this.allClues.filter( x => x.INSTITUCION.includes(value.toUpperCase())));
+     // console.log(this.filteredOptions);
+   } else {
+     this.filteredOptions = of([]);
+   }
+
+  }
+
+  onSelectClues(clues: Clues) {
+    this.cluesSelected = clues;
+    // console.log(this.cluesSelected);
+    this.filteredOptions = of([]);
+    // console.table(this.allClues.filter(x => x.ID === this.cluesSelected.ID));
+    this.destiny = new LatLng(this.cluesSelected.LATITUD, this.cluesSelected.LONGITUD);
+
+    this.origin = new LatLng(this.currentPosition.coords.latitude, this.currentPosition.coords.longitude);
+
+    this.onCalculateRoute();
+  }
 
   /**
    * Genera el mapa nativamente
@@ -401,6 +432,7 @@ export class CluesUbicationComponent implements OnInit, OnDestroy {
   async onCalculateRoute() {
     const dialogRef = this.dialog.open(LoadModalComponent, { width: '350px', data: { message: 'Buscando ruta de llegada'}});
     this.startRoute = true;
+    // this.mode = 'route';
     // console.log('onCalculate');
     const element = document.getElementById('map_canvas_route');
     const origin = new google.maps.LatLng(this.origin.lat, this.origin.lng);

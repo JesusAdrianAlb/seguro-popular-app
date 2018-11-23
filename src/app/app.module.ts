@@ -30,8 +30,6 @@ import { PermissionService } from './common/services/permission.service';
 import { AuthService } from './common/services/auth.service';
 
 
-
-
 Pro.init('decca4ae', {
   appVersion: '0.0.1'
 });
@@ -90,7 +88,7 @@ export class CustumErrorHandler implements ErrorHandler {
     ConsultationService,
     UbicationService,
     PermissionService,
-    AuthService
+    AuthService,
   ],
   bootstrap: [
     AppComponent

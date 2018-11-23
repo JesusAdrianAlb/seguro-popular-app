@@ -37,4 +37,20 @@
         }
     }
 
+    .search-bar {
+        position: absolute;
+        background: transparent;
+        width:100%;
+        top: 0;
+        margin-top: 10px;
+
+        .search-input {
+            padding: 10px;
+            background: white;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #666666;
+        }
+    }
+
 }

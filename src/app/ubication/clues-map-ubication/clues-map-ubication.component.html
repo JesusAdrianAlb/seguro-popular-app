@@ -1,6 +1,7 @@
 <div class="full-view-content">
   <div class="map-container">
       <app-clues-ubication *ngIf="isReady" [seeYouLocation]="true"
+      [mode]="'Location'"
       [cluesMarkers]="getMarkersFromLocation(filterClues)"
       [allClues]="allClues">
       </app-clues-ubication>
